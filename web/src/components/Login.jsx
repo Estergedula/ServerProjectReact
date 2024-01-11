@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from 'react-router-dom'
+import { memo, useState } from "react";
 
-const Login = (props) => {
+
+const Login = () => {
     return(
         <>
             <input type="text" placeholder="your name"/><br />
@@ -11,4 +13,4 @@ const Login = (props) => {
         </>
     )
 }
-export default memo (Login)
+export default Login
