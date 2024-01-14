@@ -1,58 +1,79 @@
 import React from "react";
 import { memo, useState } from "react";
+import { useForm } from "react-hook-form";
 import Details from "./Details";
 
 
 
 const Register = () => {
-    const [regUserDetails, setRegUserDetails] = useState({ userName: '', password: '', verifyPassword: '' })
-    const [isExsist,setIsExist]=useState(true)
-    const {
-        register,
-        handleSubmit,
-      } = useForm();
-    
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-                setRegUserDetails({ ...regUserDetails, [name]: value })
+
+  const [isExsist, setIsExist] = useState(true)
+  const [user, setUser] = useState({})
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm();
+
+  const onSubmit = (userDetails) => {
+    if (userDetails.password !== userDetails.verifyPassword) {
+      alert('error. password is not defined')
+      return;
     }
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     alert(regUserDetails.userName)
-    //     fetch(`http://localhost:3000/users/?username=${regUserDetails.userName}`)
-    //         .then(response => {
-    //             // console.log(response.status) ;
-    //             // if (response.ok) {
-    //             //     alert('this user name aleady exist');
-    //             // }
-    //             // setIsExist(false) ;
-    //             return response.json()
-    //         })
-    //         .then(data => {
-    //             debugger
-    //             if(data.length){
-    //                 alert('this user name aleady exist');
-    //             }
-    //             console.log(data);
-    //         })
-    //         .catch(error => {
-    //             // Handle any errors
-    //             console.error('Error:', error);
-    //         });
-    // }
-    return (
-        <>
-           {isExsist? <form onSubmit={handleSubmit(onSubmit)}>
-                <input type="text" placeholder="user name" name="name" {...register("name", {
-              required: true,
-              pattern: ".{2,}"
-            })} pattern=".{2,}" value={regUserDetails.name} onChange={handleChange} /><br />
-                <input type="password" placeholder="password" name="password" required value={regUserDetails.password} onChange={handleChange} /><br />
-                <input type="password" placeholder="verify-password" name="verifyPassword" required value={regUserDetails.verifyPassword} onChange={handleChange} />
-                <button type="submit">click me!</button><br />
-            </form>:
-            <Details/>}
-        </>
-    )
+    fetch(`http://localhost:3000/users/?username=${userDetails.userName}`)
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        if (data.length) {
+          alert('this user name aleady exist');
+          reset();
+          return;
+        }
+        setIsExist(false);
+        setUser(userDetails);
+      })
+  }
+  return (
+    <>
+      {isExsist ? <form onSubmit={handleSubmit(onSubmit)}>
+        <input type="text" placeholder="user name" name="userName" {...register("userName", {
+          required: " user name is required.",
+          pattern: {
+            value:/^[a-zA-Z ]*$/,
+            message: "User name cannot contain a white space"
+          },
+          minLength: {
+            value: 2,
+            message: "user name should be at-least 2 characters."
+          }
+        })} /><br />
+        {errors.userName && (
+          <p className="errorMsg">{errors.userName.message}</p>)}
+        <input type="password" placeholder="password" name="password" {...register("password", {
+          required: "Password is required.",
+          minLength: {
+            value: 6,
+            message: "Password should be at-least 6 characters."
+          }
+        })} /><br />
+        {errors.password && (
+          <p className="errorMsg">{errors.password.message}</p>)}
+        <input type="password" placeholder="verify-password" name="verifyPassword" {...register("verifyPassword", {
+          required: "verify-password is required.",
+          minLength: {
+            value: 6,
+            message: "verify-password should be at-least 6 characters."
+          }
+        })} />
+        {errors.verifyPassword && (
+          <p className="errorMsg">{errors.verifyPassword.message}</p>)}<br />
+        <button type="submit">click me!</button>
+      </form> :
+        <Details user={user} />}
+    </>
+  )
 }
 export default Register
