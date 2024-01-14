@@ -5,7 +5,7 @@ const Details = () => {
     return(
         <>
             <form action="submit">
-                
+                <button></button>
             </form>
         </>
     )
