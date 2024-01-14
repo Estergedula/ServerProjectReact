@@ -42,7 +42,7 @@ const Register = () => {
         <input type="text" placeholder="user name" name="userName" {...register("userName", {
           required: " user name is required.",
           pattern: {
-            value:/^[a-zA-Z ]*$/,
+            value:/^[a-zA-Z]*$/,
             message: "User name cannot contain a white space"
           },
           minLength: {
