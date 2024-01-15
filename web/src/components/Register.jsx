@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 
 
@@ -19,25 +19,36 @@ const Register = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:3000/ContinuousNumber/?name=usersId`)
-      .then(response => {
-        return response.json()
+    async function fetchData() {
+      let id = '0';
+      await fetch(`http://localhost:3000/ContinuousNumber/?name=usersId`)
+        .then(response => {
+          return response.json()
+        })
+        .then(data => {
+          console.log(data)
+          userId.current = data[0].value + 1;
+          id = data[0].id;
+        })
+      fetch(`http://localhost:3000/ContinuousNumber/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          value: userId.current,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
       })
-      .then(data => {
-        userId.current = data.value + 1;
-      })
-    fetch(`http://localHost:3000/ContinuousNumber/?name=usersId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-      body: { value: userId.current }
-    })
-      .then(res => res.json())
-      .then(json => consol.log(json))
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+    }
+    fetchData();
   }, [])
 
+  const updateId = useCallback(() => {
 
+  }, userId)
   const signUp = (userDetails) => {
     console.log(userDetails)
     if (userDetails.password !== userDetails.verifyPassword) {
@@ -57,6 +68,7 @@ const Register = () => {
         }
         setIsExist(false);
         setUser(userDetails);
+        reset();
       })
   }
 
@@ -65,26 +77,26 @@ const Register = () => {
       method: 'POST',
       body: JSON.stringify({
         id: userId.current,
-      name: moreDetails.name,
-      username: user.username,
-      email: moreDetails.email,
-      address: {
-        street: moreDetails.street,
-        suite: moreDetails.suite,
-        city: moreDetails.city,
-        zipcode: moreDetails.zipcode,
-        geo: {
-          lat: moreDetails.lat,
-          lng: moreDetails.lng
+        name: moreDetails.name,
+        username: user.username,
+        email: moreDetails.email,
+        address: {
+          street: moreDetails.street,
+          suite: moreDetails.suite,
+          city: moreDetails.city,
+          zipcode: moreDetails.zipcode,
+          geo: {
+            lat: moreDetails.lat,
+            lng: moreDetails.lng
+          }
+        },
+        "phone": moreDetails.phone,
+        "website": moreDetails.website,
+        "company": {
+          "name": moreDetails.name,
+          "catchPhrase": moreDetails.catchPhrase,
+          "bs": moreDetails.bs
         }
-      },
-      "phone": moreDetails.phone,
-      "website": moreDetails.website,
-      "company": {
-        "name": moreDetails.name,
-        "catchPhrase": moreDetails.catchPhrase,
-        "bs": moreDetails.bs
-      }
       }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
@@ -92,9 +104,10 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(json => console.log(json));
+    userId.current = userId.current + 1;
   }
 
-  
+
 
   return (
     <>
@@ -136,7 +149,7 @@ const Register = () => {
           <input type="text" placeholder="Name" name="name" {...register("name", {
             required: "name is required.",
             pattern: {
-              value: /^[A-Z][a-z/s]*$/,
+              value: /^[a-zA-Z/s]*$/,
               message: "name cannot contain numbers"
             },
             minLength: {

@@ -1,11 +1,35 @@
 {
   "ContinuousNumber": [
-    {"name":"usersId", "value": 10},
-   { "name":"todosId", "value": 200},
-    {"name":"albumsId", "value": 100},
-   { "name":"photosId", "value": 5000},
-    {"name":"postsId", "value": 100},
-    {"name":"commentsId", "value": 500}
+    {
+      "id": "usersId",
+      "name": "usersId",
+      "value": 10
+    },
+    {
+      "id": "2",
+      "name": "todosId",
+      "value": 200
+    },
+    {
+      "id": "s",
+      "name": "albumsId",
+      "value": 100
+    },
+    {
+      "id": "4",
+      "name": "photosId",
+      "value": 5000
+    },
+    {
+      "id": "5",
+      "name": "postsId",
+      "value": 100
+    },
+    {
+      "id": "6",
+      "name": "commentsId",
+      "value": 500
+    }
   ],
   "users": [
     {
