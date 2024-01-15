@@ -57,8 +57,8 @@ const Details = (props) => {
             message: "verify-password should be at-least 6 characters."
           }
         })} />
-        {errors.verifyPassword && (
-          <p className="errorMsg">{errors.verifyPassword.message}</p>)}<br />
+        {errors.phone && (
+          <p className="errorMsg">{errors.phone.message}</p>)}<br />
         <button type="submit">click me!</button>
       </form>
     )
