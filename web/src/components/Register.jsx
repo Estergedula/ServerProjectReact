@@ -8,7 +8,7 @@ const Register = () => {
 
   const [isExsist, setIsExist] = useState(true)
   const [user, setUser] = useState({})
-  const userId = useRef(0)
+  const nextUserId = useRef(0)
 
   const {
     register,
@@ -19,36 +19,35 @@ const Register = () => {
 
 
   useEffect(() => {
-    async function fetchData() {
-      let id = "0";
-      await fetch(`http://localhost:3000/ContinuousNumber/?name=usersId`)
+     function fetchData() {
+       fetch(`http://localhost:3000/ContinuousNumber/usersId`)
         .then(response => {
           return response.json()
         })
         .then(data => {
           console.log(data)
-          userId.current = data[0].value + 1;
-          id = data[0].id;
+          nextUserId.current = data.value + 1;
         })
-      fetch(`http://localhost:3000/ContinuousNumber/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          value: userId.current,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((json) => console.log(json));
     }
     fetchData();
   }, [])
 
-  const updateId = useCallback(() => {
+  
+  const updateId=useCallback(()=>{
+    fetch(`http://localhost:3000/ContinuousNumber/usersId`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        value: nextUserId.current,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
+  },[nextUserId])
 
-  }, userId)
   const signUp = (userDetails) => {
     console.log(userDetails)
     if (userDetails.password !== userDetails.verifyPassword) {
@@ -76,7 +75,7 @@ const Register = () => {
     fetch(`http://localhost:3000/users`, {
       method: 'POST',
       body: JSON.stringify({
-        id: userId.current,
+        id: nextUserId.current,
         name: moreDetails.name,
         username: user.username,
         email: moreDetails.email,
@@ -104,7 +103,8 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(json => console.log(json));
-    userId.current = userId.current + 1;
+      updateId();
+    nextUserId.current = nextUserId.current + 1;
   }
 
 
