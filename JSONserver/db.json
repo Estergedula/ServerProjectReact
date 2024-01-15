@@ -1,4 +1,12 @@
 {
+  "ContinuousNumber": [
+    {"name":"usersId", "value": "10"},
+   { "name":"todosId", "value": "200"},
+    {"name":"albumsId", "value": "100"},
+   { "name":"photosId", "value": "5000"},
+    {"name":"postsId", "value": "100"},
+    {"name":"commentsId", "value": "500"}
+  ],
   "users": [
     {
       "id": "1",
