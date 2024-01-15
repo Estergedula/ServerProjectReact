@@ -20,7 +20,7 @@ const Register = () => {
 
   useEffect(() => {
     async function fetchData() {
-      let id = '0';
+      let id = "0";
       await fetch(`http://localhost:3000/ContinuousNumber/?name=usersId`)
         .then(response => {
           return response.json()
