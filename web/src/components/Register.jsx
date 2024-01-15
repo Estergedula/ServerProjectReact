@@ -8,7 +8,8 @@ const Register = () => {
 
   const [isExsist, setIsExist] = useState(true)
   const [user, setUser] = useState({})
-const userId=useRef(0)
+  const userId = useRef(0)
+
   const {
     register,
     handleSubmit,
@@ -16,16 +17,27 @@ const userId=useRef(0)
     reset
   } = useForm();
 
-  useEffect(()=>{
+
+  useEffect(() => {
     fetch(`http://localhost:3000/ContinuousNumber/?name=usersId`)
-    .then(response => {
-      return response.json()
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        userId.current = data.value + 1;
+      })
+    fetch(`http://localHost:3000/ContinuousNumber/?name=usersId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body: { value: userId.current }
     })
-    .then(data => {
-      userId.current=data;
-      console.log(data);
-    })
+      .then(res => res.json())
+      .then(json => consol.log(json))
   }, [])
+
+
   const signUp = (userDetails) => {
     console.log(userDetails)
     if (userDetails.password !== userDetails.verifyPassword) {
@@ -44,18 +56,50 @@ const userId=useRef(0)
           return;
         }
         setIsExist(false);
-        //setUser(userDetails);
+        setUser(userDetails);
       })
   }
 
   const userData = (moreDetails) => {
-    console.log(moreDetails)
+    fetch(`http://localhost:3000/users`, {
+      method: 'POST',
+      body: JSON.stringify({
+        id: userId.current,
+      name: moreDetails.name,
+      username: user.username,
+      email: moreDetails.email,
+      address: {
+        street: moreDetails.street,
+        suite: moreDetails.suite,
+        city: moreDetails.city,
+        zipcode: moreDetails.zipcode,
+        geo: {
+          lat: moreDetails.lat,
+          lng: moreDetails.lng
+        }
+      },
+      "phone": moreDetails.phone,
+      "website": moreDetails.website,
+      "company": {
+        "name": moreDetails.name,
+        "catchPhrase": moreDetails.catchPhrase,
+        "bs": moreDetails.bs
+      }
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then((response) => response.json())
+      .then(json => console.log(json));
   }
+
+  
 
   return (
     <>
       {isExsist ? <form onSubmit={handleSubmit(signUp)}>
-        <input type="text" placeholder="user name" name="userName" {...register("userName", {
+        <input type="text" placeholder="user name" name="userName" {...register("username", {
           required: " user name is required.",
           pattern: {
             value: /^[a-zA-Z]*$/,
