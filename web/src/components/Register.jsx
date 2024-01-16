@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { memo, useState, useEffect, useCallback } from "react";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 
 
@@ -10,6 +10,8 @@ const Register = () => {
   const [isExsist, setIsExist] = useState(true)
   const [user, setUser] = useState({})
   const nextUserId = useRef(0)
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -22,7 +24,6 @@ const Register = () => {
   useEffect(() => {
     fetch(`http://localhost:3000/ContinuousNumber/usersId`)
       .then(response => {
-        if (!response.ok) {alert(response.statusText) }
         return response.json()
       })
       .then(data => {
@@ -44,8 +45,7 @@ const Register = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => { if (!response.ok) {alert(response.statusText) } })
-      nextUserId.current =nextUserId.current +1;
+    nextUserId.current = nextUserId.current + 1;
   }
 
 
@@ -56,7 +56,7 @@ const Register = () => {
       reset();
       return;
     }
-    fetch(`http://localhost:3000/users/?username=${userDetails.userName}`)
+    fetch(`http://localhost:3000/users/?username=${userDetails.username}`)
       .then(response => {
         return response.json()
       })
@@ -77,7 +77,7 @@ const Register = () => {
     fetch(`http://localhost:3000/users`, {
       method: 'POST',
       body: JSON.stringify({
-        id: nextUserId.current,
+        id: `${nextUserId.current}` ,
         name: moreDetails.name,
         username: user.username,
         email: moreDetails.email,
@@ -106,10 +106,10 @@ const Register = () => {
       .then((response) => response.json())
       .then(data => saveLockalStorage(data));
     updateId();
+    navigate('/home');
   }
 
   const saveLockalStorage = (userData) => {
-    debugger
     let users = localStorage.getItem("users") ? JSON.parse(localStorage.getItem("users")) : [];
     users.push(userData);
     localStorage.setItem("users", JSON.stringify(users))
