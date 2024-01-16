@@ -19,21 +19,19 @@ const Register = () => {
 
 
   useEffect(() => {
-     function fetchData() {
-       fetch(`http://localhost:3000/ContinuousNumber/usersId`)
-        .then(response => {
-          return response.json()
-        })
-        .then(data => {
-          console.log(data)
-          nextUserId.current = data.value + 1;
-        })
-    }
-    fetchData();
-  }, [])
+    fetch(`http://localhost:3000/ContinuousNumber/usersId`)
+      .then(response => {
+        return response.json()
+      })
+      .then(data => {
+        console.log(data)
+        nextUserId.current = data.value + 1;
+      })
+  }
+    , [])
 
-  
-  const updateId=useCallback(()=>{
+
+  const updateId = () => {
     fetch(`http://localhost:3000/ContinuousNumber/usersId`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -44,9 +42,10 @@ const Register = () => {
         "Content-Type": "application/json",
       },
     })
-    .then((response) => response.json())
-    .then((json) => console.log(json));
-  },[nextUserId])
+      .then((response) => response.json())
+      .then((json) => console.log(json));
+  }
+
 
   const signUp = (userDetails) => {
     console.log(userDetails)
@@ -71,11 +70,12 @@ const Register = () => {
       })
   }
 
+
   const userData = (moreDetails) => {
     fetch(`http://localhost:3000/users`, {
       method: 'POST',
       body: JSON.stringify({
-        id: nextUserId.current,
+        id: nextUserId.current++,
         name: moreDetails.name,
         username: user.username,
         email: moreDetails.email,
@@ -102,12 +102,16 @@ const Register = () => {
       },
     })
       .then((response) => response.json())
-      .then(json => console.log(json));
-      updateId();
-    nextUserId.current = nextUserId.current + 1;
+      .then(data => saveLockalStorage(data));
+    updateId();
   }
 
-
+const saveLockalStorage=(userData)=>{
+  debugger
+  let users=localStorage.getItem("users")?JSON.parse(localStorage.getItem("users")):[];
+  users.push(userData);
+  localStorage.setItem("users",JSON.stringify(users))
+}
 
   return (
     <>
