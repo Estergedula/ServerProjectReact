@@ -12,18 +12,20 @@ const Login = () => {
         reset
     } = useForm();
 
-    const onSubmit = async (userDetails) => {
-        fetch(`http://localhost:3000/users/?username=${userDetails.userName}`)
+    const onSubmit = (userDetails) => {
+        fetch(`http://localhost:3000/users/?username=${userDetails.userName}&website=${userDetails.password}`)
             .then(response => {
-                console.log(response)
-                return response.json()
+                return response.json();
             })
             .then(data => {
-                if (data.length && data.website === userDetails.password) {
-
+                if (!data.length) {
+                    alert('ERROR!');
+                    reset();
+                    return;
                 }
+                setIsExist(true);
+                reset();
             })
-
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>

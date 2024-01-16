@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { memo, useState, useEffect, useCallback } from "react";
+import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 
 
@@ -21,6 +22,7 @@ const Register = () => {
   useEffect(() => {
     fetch(`http://localhost:3000/ContinuousNumber/usersId`)
       .then(response => {
+        if (!response.ok) {alert(response.statusText) }
         return response.json()
       })
       .then(data => {
@@ -42,8 +44,8 @@ const Register = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
+      .then((response) => { if (!response.ok) {alert(response.statusText) } })
+      nextUserId.current =nextUserId.current +1;
   }
 
 
@@ -75,7 +77,7 @@ const Register = () => {
     fetch(`http://localhost:3000/users`, {
       method: 'POST',
       body: JSON.stringify({
-        id: nextUserId.current++,
+        id: nextUserId.current,
         name: moreDetails.name,
         username: user.username,
         email: moreDetails.email,
@@ -106,12 +108,12 @@ const Register = () => {
     updateId();
   }
 
-const saveLockalStorage=(userData)=>{
-  debugger
-  let users=localStorage.getItem("users")?JSON.parse(localStorage.getItem("users")):[];
-  users.push(userData);
-  localStorage.setItem("users",JSON.stringify(users))
-}
+  const saveLockalStorage = (userData) => {
+    debugger
+    let users = localStorage.getItem("users") ? JSON.parse(localStorage.getItem("users")) : [];
+    users.push(userData);
+    localStorage.setItem("users", JSON.stringify(users))
+  }
 
   return (
     <>
@@ -147,7 +149,8 @@ const saveLockalStorage=(userData)=>{
         })} />
         {errors.verifyPassword && (
           <p className="errorMsg">{errors.verifyPassword.message}</p>)}<br />
-        <button type="submit">click me!</button>
+        <button type="submit">click me!</button><br />
+        <Link to="/login">already registered?</Link>
       </form> :
         <form onSubmit={handleSubmit(userData)}>
           <input type="text" placeholder="Name" name="name" {...register("name", {

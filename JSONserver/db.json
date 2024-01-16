@@ -1,9 +1,6 @@
 {
   "ContinuousNumber": [
-    {
-      "id": "usersId",
-      "value": 12
-    },
+    
     {
       "id": "todosId",
       "value": 200
@@ -257,7 +254,7 @@
       }
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "shira",
       "username": "shira",
       "email": "s@gmail.com",
@@ -278,7 +275,7 @@
       }
     },
     {
-      "id": 11,
+      "id": "11",
       "name": "shir",
       "username": "shira",
       "email": "s@s",
@@ -294,6 +291,48 @@
       },
       "company": {
         "name": "shir",
+        "catchPhrase": "",
+        "bs": ""
+      }
+    },
+    {
+      "id": 13,
+      "name": "avraham",
+      "username": "avraham",
+      "email": "j@gmail.com",
+      "address": {
+        "street": "",
+        "suite": "",
+        "city": "jerusalem",
+        "zipcode": "",
+        "geo": {
+          "lat": "",
+          "lng": ""
+        }
+      },
+      "company": {
+        "name": "avraham",
+        "catchPhrase": "",
+        "bs": ""
+      }
+    },
+    {
+      "id": 15,
+      "name": "yitzchack",
+      "username": "yitzchack",
+      "email": "y@gmail.com",
+      "address": {
+        "street": "",
+        "suite": "",
+        "city": "bnei brak",
+        "zipcode": "",
+        "geo": {
+          "lat": "",
+          "lng": ""
+        }
+      },
+      "company": {
+        "name": "yitzchack",
         "catchPhrase": "",
         "bs": ""
       }
