@@ -10,15 +10,14 @@ import Start from './components/Start'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 function App() {
- let x = "hello world"
   return (
     <>
       <Router>
         <div className='App'>
           <Routes>
           <Route path="/" element={<Start />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/home" element={<Home x={x} />} />
+            <Route  path="/login" element={<Login />} />
+            <Route path="/users/:id" element={<Home />} />
             <Route path="/register" element={<Register />} />
           </Routes>
         </div>

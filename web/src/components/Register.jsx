@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { memo, useState, useEffect, useCallback } from "react";
+import { memo, useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 
@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 
 const Register = () => {
 
-  const [isExsist, setIsExist] = useState(true)
+  const [isExsist, setIsExist] = useState(true);
   const [user, setUser] = useState({})
   const nextUserId = useRef(0)
 
@@ -106,13 +106,14 @@ const Register = () => {
       .then((response) => response.json())
       .then(data => saveLockalStorage(data));
     updateId();
-    navigate('/home');
+    navigate(`/users/${nextUserId.current-1}`);
   }
 
   const saveLockalStorage = (userData) => {
     let users = localStorage.getItem("users") ? JSON.parse(localStorage.getItem("users")) : [];
     users.push(userData);
     localStorage.setItem("users", JSON.stringify(users))
+    localStorage.setItem("currentUser", JSON.stringify(userData));
   }
 
   return (

@@ -26,7 +26,7 @@ const Login = () => {
                 }
                 reset();
                 saveLockalStorage(data)
-                navigate('/home')
+                navigate(`/users/${data[0].id}`)
             })
     }
     const saveLockalStorage = (userData) => {
@@ -42,6 +42,7 @@ const Login = () => {
         }
         users.push(userData);
         localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("currentUser", JSON.stringify(userData));
       }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
