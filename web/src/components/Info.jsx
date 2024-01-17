@@ -4,10 +4,16 @@ import { memo, useState, useEffect } from "react";
 
 const Info = () => {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"))
-    Object.keys(currentUser).forEach((key, index)=> {})
+    const print = (myObject) => {
+        return Object.keys(myObject).map((key) => (typeof myObject[key] === 'object' ?
+            <div><p>{key}</p> {print(myObject[key])}</div> :
+            <p>{key}: {myObject[key]}</p>))
+    }
     return (
         <>
-       { StringifyObject()}
+            <div>
+                {print(currentUser)}
+            </div>
         </>
     )
 }

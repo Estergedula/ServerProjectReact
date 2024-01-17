@@ -8,16 +8,25 @@ import { useForm } from "react-hook-form";
 const Register = () => {
 
   const [isExsist, setIsExist] = useState(true);
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState()
   const nextUserId = useRef(0)
 
   const navigate = useNavigate();
+
+ const mas = {
+    Password: {
+      required: "Password is required.",
+      minLength: {
+        value: 6,
+        message: "Password should be at-least 6 characters."
+      }
+    }
+  }
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset
   } = useForm();
 
 
@@ -27,7 +36,6 @@ const Register = () => {
         return response.json()
       })
       .then(data => {
-        console.log(data)
         nextUserId.current = data.value + 1;
       })
   }
@@ -50,25 +58,21 @@ const Register = () => {
 
 
   const signUp = (userDetails) => {
-    console.log(userDetails)
     if (userDetails.password !== userDetails.verifyPassword) {
       alert('error. password is not defined')
-      reset();
       return;
     }
-    fetch(`http://localhost:3000/users/?username=${userDetails.username}`)
+    fetch(`http://localhost:3000/users/?username=${userDetails.userName}`)
       .then(response => {
         return response.json()
       })
       .then(data => {
         if (data.length) {
           alert('this user name aleady exist');
-          reset();
           return;
         }
         setIsExist(false);
         setUser(userDetails);
-        reset();
       })
   }
 
@@ -77,9 +81,9 @@ const Register = () => {
     fetch(`http://localhost:3000/users`, {
       method: 'POST',
       body: JSON.stringify({
-        id: `${nextUserId.current}` ,
+        id: `${nextUserId.current}`,
         name: moreDetails.name,
-        username: user.username,
+        username: user.userName,
         email: moreDetails.email,
         address: {
           street: moreDetails.street,
@@ -104,22 +108,19 @@ const Register = () => {
       },
     })
       .then((response) => response.json())
-      .then(data => saveLockalStorage(data));
+      .then(data => {
+        const user = (({ website, ...o }) => o)(data);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+      });
     updateId();
-    navigate(`/users/${nextUserId.current-1}`);
+    navigate(`/home/users/${nextUserId.current - 1}`);
   }
 
-  const saveLockalStorage = (userData) => {
-    let users = localStorage.getItem("users") ? JSON.parse(localStorage.getItem("users")) : [];
-    users.push(userData);
-    localStorage.setItem("users", JSON.stringify(users))
-    localStorage.setItem("currentUser", JSON.stringify(userData));
-  }
 
   return (
     <>
       {isExsist ? <form onSubmit={handleSubmit(signUp)}>
-        <input type="text" placeholder="user name" name="userName" {...register("username", {
+        <input type="text" placeholder="user name"{...register("userName", {
           required: " user name is required.",
           pattern: {
             value: /^[a-zA-Z]*$/,
@@ -132,7 +133,7 @@ const Register = () => {
         })} /><br />
         {errors.userName && (
           <p className="errorMsg">{errors.userName.message}</p>)}
-        <input type="password" placeholder="password" name="password" {...register("password", {
+        <input type="password" placeholder="password" {...register("password", {
           required: "Password is required.",
           minLength: {
             value: 6,
@@ -141,7 +142,7 @@ const Register = () => {
         })} /><br />
         {errors.password && (
           <p className="errorMsg">{errors.password.message}</p>)}
-        <input type="password" placeholder="verify-password" name="verify-password" {...register("verifyPassword", {
+        <input type="password" placeholder="verify-password" {...register("verifyPassword", {
           required: "verify-password is required.",
           minLength: {
             value: 6,
@@ -154,7 +155,7 @@ const Register = () => {
         <Link to="/login">already registered?</Link>
       </form> :
         <form onSubmit={handleSubmit(userData)}>
-          <input type="text" placeholder="Name" name="name" {...register("name", {
+          <input type="text" placeholder="Name" {...register("name", {
             required: "name is required.",
             pattern: {
               value: /^[a-zA-Z/s]*$/,
@@ -167,7 +168,7 @@ const Register = () => {
           })} /><br />
           {errors.name && (
             <p className="errorMsg">{errors.name.message}</p>)}
-          <input type="email" placeholder="Email" name="email" {...register("email", {
+          <input type="email" placeholder="Email" {...register("email", {
             required: "Email is required",
           })} /><br />
           {errors.email && (
@@ -175,12 +176,12 @@ const Register = () => {
           <label >address:</label><br />
           <input type="text" placeholder="street" {...register("street")} />
           <input type="text" placeholder="suite"  {...register("suite")} />
-          <input type="text" placeholder="city" name="city" {...register("city", {
+          <input type="text" placeholder="city" {...register("city", {
             required: "City is required",
           })} />
           {errors.city && (
             <p className="errorMsg">{errors.city.message}</p>)}
-          <input type="text" placeholder="zipcode" name="zipcode" {...register("zipcode", {
+          <input type="text" placeholder="zipcode"  {...register("zipcode", {
             pattern: {
               value: /^[0-9-]+$/,
               message: 'Please enter only digits',
@@ -190,7 +191,7 @@ const Register = () => {
           {errors.zipcode && (
             <p className="errorMsg">{errors.zipcode.message}</p>)}<br />
           <label >geo:</label><br />
-          <input type="text" placeholder="lat" name="lat" {...register("lat", {
+          <input type="text" placeholder="lat" {...register("lat", {
             pattern: {
               value: /^[0-9-]+$/,
               message: 'Please enter only digits',
@@ -199,7 +200,7 @@ const Register = () => {
           } />
           {errors.lat && (
             <p className="errorMsg">{errors.lat.message}</p>)}
-          <input type="text" placeholder="lng" name="lng" {...register("lng", {
+          <input type="text" placeholder="lng" {...register("lng", {
             pattern: {
               value: /^[0-9-]+$/,
               message: 'Please enter only digits',
@@ -208,7 +209,7 @@ const Register = () => {
           } />
           {errors.lng && (
             <p className="errorMsg">{errors.lng.message}</p>)}<br />
-          <input type="text" placeholder="phone number" name="phoneNumber" {...register("phoneNumber", {
+          <input type="text" placeholder="phone number" {...register("phoneNumber", {
             required: "Phone number is required.",
             pattern: {
               value: /^[0-9-]+$/,

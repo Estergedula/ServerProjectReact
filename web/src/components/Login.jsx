@@ -10,8 +10,12 @@ const Login = () => {
     const {
         register,
         handleSubmit,
-        reset
-    } = useForm();
+    } = useForm({
+        defaultValues: {
+            userName: '',
+            password: ''
+        }
+    });
 
     const onSubmit = (userDetails) => {
         fetch(`http://localhost:3000/users/?username=${userDetails.userName}&website=${userDetails.password}`)
@@ -21,33 +25,17 @@ const Login = () => {
             .then(data => {
                 if (!data.length) {
                     alert('ERROR!');
-                    reset();
                     return;
                 }
-                reset();
-                saveLockalStorage(data)
-                navigate(`/users/${data[0].id}`)
+                const user = (({ website, ...o }) => o)(data[0]);
+                localStorage.setItem("currentUser", JSON.stringify(user));
+                navigate(`/home/users/${data[0].id}`)
             })
     }
-    const saveLockalStorage = (userData) => {
-        let users;
-        if(localStorage.getItem("users")){
-            users = JSON.parse(localStorage.getItem("users"));
-            if(!users.filter(user=>user.username===userData.username).length){
-                return;
-            } 
-        }
-        else{
-            users=[]
-        }
-        users.push(userData);
-        localStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("currentUser", JSON.stringify(userData));
-      }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <input type="text" name="userName" placeholder="user name" {...register("userName")} /><br />
-            <input type="password" name="password" placeholder="password" {...register("password")} /><br />
+            <input type="text"  placeholder="user name" {...register("userName")} /><br />
+            <input type="password"  placeholder="password" {...register("password")} /><br />
             <button>click me!</button><br />
             <Link to="/register">not registered yet?</Link>
         </form>
