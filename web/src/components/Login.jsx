@@ -27,7 +27,7 @@ const Login = () => {
                     alert('ERROR!');
                     return;
                 }
-                const user = (({ website, ...o }) => o)(data[0]);
+                const user ={username:data[0].username,id:data[0].id};
                 localStorage.setItem("currentUser", JSON.stringify(user));
                 navigate(`/home/users/${data[0].id}`)
             })

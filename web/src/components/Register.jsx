@@ -8,12 +8,12 @@ import { useForm } from "react-hook-form";
 const Register = () => {
 
   const [isExsist, setIsExist] = useState(true);
-  const [user, setUser] = useState()
+  const { user, setUser } = useContext(UserContext);
   const nextUserId = useRef(0)
 
   const navigate = useNavigate();
 
- const mas = {
+  const mas = {
     Password: {
       required: "Password is required.",
       minLength: {
@@ -109,7 +109,7 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(data => {
-        const user = (({ website, ...o }) => o)(data);
+        const user = { username: data[0].username, id: data[0].id };
         localStorage.setItem("currentUser", JSON.stringify(user));
       });
     updateId();
