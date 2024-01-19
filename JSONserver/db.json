@@ -2,7 +2,7 @@
   "ContinuousNumber": [
     {
       "id": "usersId",
-      "value": 14
+      "value": 10
     },
     {
       "id": "todosId",
@@ -255,27 +255,6 @@
         "catchPhrase": "Centralized empowering task-force",
         "bs": "target end-to-end models"
       }
-    },
-    {
-      "id": "14",
-      "name": "Ruti",
-      "username": "eee",
-      "email": "r@gmail.com",
-      "address": {
-        "street": "",
-        "suite": "",
-        "city": "rrrr",
-        "zipcode": "",
-        "geo": {
-          "lat": "",
-          "lng": ""
-        }
-      },
-      "company": {
-        "name": "Ruti",
-        "catchPhrase": "",
-        "bs": ""
-      }
     }
   ],
   "todos": [
@@ -283,7 +262,7 @@
       "userId": "1",
       "id": "1",
       "title": "delectus aut autem",
-      "completed": false
+      "completed": true
     },
     {
       "userId": "1",

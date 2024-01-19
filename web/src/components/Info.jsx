@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import { json, useParams } from "react-router-dom";
 import { memo, useState, useEffect } from "react";
-
+import { UserContext } from '../App'
 const Info = () => {
-    const {currentUser,} = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
+    useEffect(
+        () => {
+            if (user == null) {
+                navigate('/login')
+            }
+            fetch(`http://localhost:3000/users/${user.id}`)
+                .then(response => response.json())
+                .then(data => {
+                    setUser(data)
+                })
+            return () => setUser(JSON.parse(localStorage.getItem("currentUser")))
+        }, [])
     const print = (myObject) => {
         return Object.keys(myObject).map((key) => (typeof myObject[key] === 'object' ?
             <div><p>{key}</p> {print(myObject[key])}</div> :
             <p>{key}: {myObject[key]}</p>))
     }
+
     return (
         <>
             <div>
-                {print(currentUser)}
+                {print(user)}
             </div>
         </>
     )

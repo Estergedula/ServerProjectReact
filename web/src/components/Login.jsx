@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useContext ,useEffect} from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { memo, useState } from "react";
-import { useForm } from "react-hook-form";
-
+import { useForm} from "react-hook-form";
+import { UserContext } from '../App'
 const Login = () => {
 
     const navigate = useNavigate();
+    const { user, setUser } = useContext(UserContext);
+
+    useEffect(() => {
+        if (user != null) {
+            navigate(`/home/users/${user.id}`)
+        }
+    }, [])
+
 
     const {
         register,
         handleSubmit,
+        reset,
     } = useForm({
         defaultValues: {
             userName: '',
@@ -25,17 +34,20 @@ const Login = () => {
             .then(data => {
                 if (!data.length) {
                     alert('ERROR!');
+                    reset();
                     return;
                 }
-                const user ={username:data[0].username,id:data[0].id};
-                localStorage.setItem("currentUser", JSON.stringify(user));
+                reset();
+                const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id };
+                setUser(currentUser);
+                localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 navigate(`/home/users/${data[0].id}`)
             })
     }
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <input type="text"  placeholder="user name" {...register("userName")} /><br />
-            <input type="password"  placeholder="password" {...register("password")} /><br />
+            <input type="text" placeholder="user name" {...register("userName", { required: true })} /><br />
+            <input type="password" placeholder="password" {...register("password", { required: true })} /><br />
             <button>click me!</button><br />
             <Link to="/register">not registered yet?</Link>
         </form>

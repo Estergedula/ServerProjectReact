@@ -1,14 +1,23 @@
-import React from "react";
+import React,{useContext,useEffect} from "react";
 import { useParams, useNavigate, Link, Outlet } from "react-router-dom";
-import { memo, useState, useEffect } from "react";
 import './Home.css'
-
+import{UserContext} from '../App'
 
 const Home = () => {
     const navigate = useNavigate()
+    const {user,setUser} = useContext(UserContext);
+
+    useEffect(()=>{
+        if(user==null){
+            navigate('/login')
+        }
+    },[])
+
+
     const Logout = () => {
         localStorage.clear();
-        navigate('/logIn')
+        setUser(null)
+        navigate('/login')
     }
     return (
         <>

@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
-import { memo, useState, useEffect } from "react";
+import React, { useRef ,useContext ,useState, useEffect} from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-
+import{UserContext} from '../App'
 
 
 const Register = () => {
@@ -26,11 +25,15 @@ const Register = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
 
   useEffect(() => {
+    if (user != null) {
+      navigate(`/home/users/${user.id}`)
+  }
     fetch(`http://localhost:3000/ContinuousNumber/usersId`)
       .then(response => {
         return response.json()
@@ -40,6 +43,7 @@ const Register = () => {
       })
   }
     , [])
+
 
 
   const updateId = () => {
@@ -60,6 +64,7 @@ const Register = () => {
   const signUp = (userDetails) => {
     if (userDetails.password !== userDetails.verifyPassword) {
       alert('error. password is not defined')
+      reset();
       return;
     }
     fetch(`http://localhost:3000/users/?username=${userDetails.userName}`)
@@ -69,8 +74,10 @@ const Register = () => {
       .then(data => {
         if (data.length) {
           alert('this user name aleady exist');
+          reset();
           return;
         }
+        reset();
         setIsExist(false);
         setUser(userDetails);
       })
@@ -109,8 +116,8 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(data => {
-        const user = { username: data[0].username, id: data[0].id };
-        localStorage.setItem("currentUser", JSON.stringify(user));
+        const currentUser = { username: data[0].username,  name: data[0].name,id: data[0].id };
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
       });
     updateId();
     navigate(`/home/users/${nextUserId.current - 1}`);
