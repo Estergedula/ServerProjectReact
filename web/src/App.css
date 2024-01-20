@@ -32,6 +32,7 @@
   margin-top: 20px;
   font-size: 17px;
   display: flex;
+
   justify-content:space-between;
   width: 780px;
   height: 60px;
@@ -46,9 +47,7 @@
   align-items: center;
   width: 120px;
 }
-.idSpan{
-  margin-left: 10px;
-}
+
 .posts{
   display: flex;
   justify-content:space-between;
@@ -64,7 +63,10 @@
 .delete,.update{
   background-size: cover;
   background-repeat: no-repeat;
-  width: 22px;
+  width: 43px;
   height: 45px;
 
+}
+.postTitle{
+margin-left: 20px;
 }
