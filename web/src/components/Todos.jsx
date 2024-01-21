@@ -7,6 +7,7 @@ const Todos = () => {
     const [displayAdd, setDisplayAdd] = useState(false)
     const nextTodoId = useRef(0)
     const currentUpdateId = useRef(null)
+    const orderOptions = ["id", "completed", "alphabetical", "random"]
     const {
         register,
         handleSubmit,
@@ -23,6 +24,22 @@ const Todos = () => {
             getNextId();
         }, [])
 
+
+        const shuffleArray=(array)=> {
+            let newArray=array
+            let len = array.length,
+                currentIndex;
+            for (currentIndex = len - 1; currentIndex > 0; currentIndex--) {
+                let randIndex = Math.floor(Math.random() * (currentIndex + 1) );
+                var temp = newArray[currentIndex];
+                newArray[currentIndex] = newArray[randIndex];
+                newArray[randIndex] = temp;
+            }
+            return newArray
+        }
+    const handleChangeOrder = (event) => {
+        dispatch({ type: "SORT", orderBy: event.target.value })
+    }
 
     const reducer = (state, action) => {
         switch (action.type) {
@@ -46,16 +63,30 @@ const Todos = () => {
                         return todo;
                     }
                 });
-            case "UPDATE":
-                return state.map((todo) => {
-                    if (todo.id === action.id) {
-                        return { ...todo, title: action.data };
-                    } else {
-                        return todo;
-                    }
-                });
             case "ADD":
                 return [...state, action.data]
+            case "SORT":
+                let sortedArray = []
+                switch (action.orderBy) {
+                    case "alphabetical":
+                        {
+                            sortedArray = [...state].sort((todo1, todo2) => todo1.title > todo2.title ? 1 : -1)
+                            break;
+                        }
+                    case "completed":
+                        {
+                            sortedArray = [...state].sort((todo1, todo2) => todo1.completed < todo2.completed ? 1 : -1)
+                            break
+                        }
+                    case "random":
+                        {
+                            sortedArray = [...state].sort(() => Math.random() > 0.5?1:-1); 
+                            break
+                        }
+                    default:
+                        sortedArray = [...state].sort((todo1, todo2) => todo1.id - todo2.id);
+                }
+                return sortedArray;
             default:
                 return state;
         }
@@ -101,7 +132,6 @@ const Todos = () => {
         nextTodoId.current = nextTodoId.current + 1;
     }
 
-
     const handleCheckBox = (event, taskId) => {
         fetch(`http://localhost:3000/todos/${taskId}`, {
             method: 'PATCH',
@@ -114,7 +144,7 @@ const Todos = () => {
             },
         })
             .then((response) => response.json())
-            .then(data => dispatch({ type: "CHANGE", data:data }))
+            .then(data => dispatch({ type: "CHANGE", data: data }))
     }
 
 
@@ -141,33 +171,39 @@ const Todos = () => {
         })
             .then((response) => response.json())
             .then(data => {
-                console.log(data)
                 dispatch({ type: "ADD", data: data });
             });
         updateId();
     }
 
-    const onSubmitUpdate = (data) => {
-        let id = Object.keys(data)[0]
-        fetch(`http://localhost:3000/ContinuousNumber/${id}`, {
+    const onSubmitUpdate = (dataInput) => {
+        let id = Object.keys(dataInput)[0]
+        fetch(`http://localhost:3000/todos/${id}`, {
             method: 'PATCH',
             body: JSON.stringify({
-                title: data['title']
+                title: dataInput[id]
             }),
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
-        })
-       .then(response=>response.json())
-      .then(data=>dispatch({ type: "CHANGE", data: data}))
-        
+        }).then(response => response.json())
+            .then(data => {
+                dispatch({ type: "CHANGE", data: data })
+            })
         reset();
     }
     return (
         <>
-            <div id="operations"><button onClick={() => { setDisplayAdd(display => !display) }}>+</button>
-                {displayAdd && <form onSubmit={handleSubmit(data => { reset(); addTodo(data["title"]) })}>
+            <div id="operations">
+                <select onChange={handleChangeOrder}>
+                <option selected disabled>Sort by:</option>
+                    {orderOptions.map((option) => {
+                        return <option key={option}>{option}</option>
+                    })}
+                </select><br />-
+                <button onClick={() => { setDisplayAdd(display => !display) }}>+</button>
+                {displayAdd && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
                     <textarea type="text" placeholder="title" {...register("title")} /><br />
                     <button type="submit">Add</button>
                 </form>}</div>
@@ -177,7 +213,7 @@ const Todos = () => {
                     <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) => handleCheckBox(event, todo.id)} />
                         <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
                         <button className="update" onClick={() => {
-                            if (todo.id == currentUpdateId.current) {
+                            if (todo.id != currentUpdateId.current) {
                                 dispatch({ type: "DISPLAY", id: currentUpdateId.current })
                                 currentUpdateId.current = todo.id
                             } dispatch({ type: "DISPLAY", id: todo.id });
