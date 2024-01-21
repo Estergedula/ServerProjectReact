@@ -1,13 +1,22 @@
 import React, { useRef, useEffect, useState, useContext, useReducer } from "react";
 import { UserContext } from '../App'
 import { useForm } from "react-hook-form";
+import Select from 'react-select'
+
 
 const Todos = () => {
     const { user } = useContext(UserContext);
-    const [displayAdd, setDisplayAdd] = useState(false)
+    const [display, setDisplay] = useState({ add: false, search: false })
     const nextTodoId = useRef(0)
     const currentUpdateId = useRef(null)
-    const orderOptions = ["id", "completed", "alphabetical", "random"]
+    const orderOptions = [{ value: "id", label: "id" },
+    { value: "completed", label: "completed" },
+    { value: "alphabetical", label: "alphabetical" },
+    { value: "random", label: "random" }]
+    const searchOptions = [{ value: "id", label: "id" },
+    { value: "completed", label: "completed" },
+    { value: "alphabetical", label: "alphabetical" },
+    { value: "all", label: "all" }]
     const {
         register,
         handleSubmit,
@@ -24,22 +33,6 @@ const Todos = () => {
             getNextId();
         }, [])
 
-
-        const shuffleArray=(array)=> {
-            let newArray=array
-            let len = array.length,
-                currentIndex;
-            for (currentIndex = len - 1; currentIndex > 0; currentIndex--) {
-                let randIndex = Math.floor(Math.random() * (currentIndex + 1) );
-                var temp = newArray[currentIndex];
-                newArray[currentIndex] = newArray[randIndex];
-                newArray[randIndex] = temp;
-            }
-            return newArray
-        }
-    const handleChangeOrder = (event) => {
-        dispatch({ type: "SORT", orderBy: event.target.value })
-    }
 
     const reducer = (state, action) => {
         switch (action.type) {
@@ -69,24 +62,27 @@ const Todos = () => {
                 let sortedArray = []
                 switch (action.orderBy) {
                     case "alphabetical":
-                        {
-                            sortedArray = [...state].sort((todo1, todo2) => todo1.title > todo2.title ? 1 : -1)
-                            break;
-                        }
+                        sortedArray = [...state].sort((todo1, todo2) => todo1.title > todo2.title ? 1 : -1)
+                        break;
                     case "completed":
-                        {
-                            sortedArray = [...state].sort((todo1, todo2) => todo1.completed < todo2.completed ? 1 : -1)
-                            break
-                        }
+                        sortedArray = [...state].sort((todo1, todo2) => todo1.completed < todo2.completed ? 1 : -1)
+                        break
                     case "random":
-                        {
-                            sortedArray = [...state].sort(() => Math.random() > 0.5?1:-1); 
-                            break
-                        }
+                        sortedArray = [...state].sort(() => Math.random() > 0.5 ? 1 : -1);
+                        break;
                     default:
                         sortedArray = [...state].sort((todo1, todo2) => todo1.id - todo2.id);
                 }
                 return sortedArray;
+            case "SEARCH":
+                switch (action.search) {
+                    case "id":
+                        return state.filter(todo => todo.id == action.data)
+                    case "completed":
+                        return state.filter(todo => todo.completed == true);
+                    default:
+                        return state.filter(todo => todo.title.includes(action.data));
+                }
             default:
                 return state;
         }
@@ -132,6 +128,31 @@ const Todos = () => {
         nextTodoId.current = nextTodoId.current + 1;
     }
 
+    const handleChangeOrder = (event) => {
+        dispatch({ type: "SORT", orderBy: event.value })
+    }
+
+    const handleChangeSearch = (event) => {
+        let searchBy = event.value;
+        switch (searchBy) {
+            case "completed":
+                dispatch({ type: "SEARCH", search: "completed" })
+                break;
+            case "all":
+                getData();
+                break;
+            default:
+                setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
+        }
+    }
+
+    const search = (data) => {
+        dispatch({ type: "SEARCH", search: display.search, data: data });
+        if (display.search == "id") {
+            reset();
+            setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
+        }
+    }
     const handleCheckBox = (event, taskId) => {
         fetch(`http://localhost:3000/todos/${taskId}`, {
             method: 'PATCH',
@@ -193,20 +214,26 @@ const Todos = () => {
             })
         reset();
     }
+    
     return (
         <>
             <div id="operations">
-                <select onChange={handleChangeOrder}>
-                <option selected disabled>Sort by:</option>
-                    {orderOptions.map((option) => {
-                        return <option key={option}>{option}</option>
-                    })}
-                </select><br />-
-                <button onClick={() => { setDisplayAdd(display => !display) }}>+</button>
-                {displayAdd && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
+                <Select options={orderOptions} onChange={handleChangeOrder} placeholder="Sort by..." />
+                <Select options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
+
+                {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
+                    <input type="text" placeholder="id" {...register("search")} /><br />
+                    <button type="submit">Search</button> </form>}
+
+                {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}
+
+                <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
+
+                {display.add && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
                     <textarea type="text" placeholder="title" {...register("title")} /><br />
                     <button type="submit">Add</button>
                 </form>}</div>
+
             {userTodos.map((todo) => {
                 return <><div className="tasks" key={todo.id}><span className="idSpan">task Id:{todo.id}</span>
                     <span>{todo.title}</span>
