@@ -6,6 +6,7 @@ const Todos = () => {
     const { user } = useContext(UserContext);
     const [displayAdd, setDisplayAdd] = useState(false)
     const nextTodoId = useRef(0)
+    const currentUpdateId = useRef(null)
     const {
         register,
         handleSubmit,
@@ -25,10 +26,10 @@ const Todos = () => {
 
     const reducer = (state, action) => {
         switch (action.type) {
-            case "COMPLETE":
+            case "CHANGE":
                 return state.map((todo) => {
-                    if (todo.id === action.id) {
-                        return { ...todo, completed: !todo.completed };
+                    if (todo.id == action.data.id) {
+                        return action.data;
                     } else {
                         return todo;
                     }
@@ -113,7 +114,7 @@ const Todos = () => {
             },
         })
             .then((response) => response.json())
-            .then(data => dispatch({ type: "COMPLETE", id: data.id }))
+            .then(data => dispatch({ type: "CHANGE", data:data }))
     }
 
 
@@ -148,7 +149,19 @@ const Todos = () => {
 
     const onSubmitUpdate = (data) => {
         let id = Object.keys(data)[0]
-        dispatch({ type: "UPDATE", data: data[id], id: id });
+        fetch(`http://localhost:3000/ContinuousNumber/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                title: data['title']
+            }),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+        })
+       .then(response=>response.json())
+      .then(data=>dispatch({ type: "CHANGE", data: data}))
+        
         reset();
     }
     return (
@@ -163,7 +176,12 @@ const Todos = () => {
                     <span>{todo.title}</span>
                     <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) => handleCheckBox(event, todo.id)} />
                         <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
-                        <button className="update" onClick={() => { dispatch({ type: "DISPLAY", id: todo.id }); }}></button></span>
+                        <button className="update" onClick={() => {
+                            if (todo.id == currentUpdateId.current) {
+                                dispatch({ type: "DISPLAY", id: currentUpdateId.current })
+                                currentUpdateId.current = todo.id
+                            } dispatch({ type: "DISPLAY", id: todo.id });
+                        }}></button></span>
                 </div>
                     {todo.update && <form onSubmit={handleSubmit(onSubmitUpdate)}>
                         <textarea type="text" placeholder="title" {...register(`${todo.id}`)} /><br />
