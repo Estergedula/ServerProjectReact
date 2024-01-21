@@ -16,6 +16,8 @@ const Info = () => {
                 })
             return () => setUser(JSON.parse(localStorage.getItem("currentUser")))
         }, [])
+
+        
     const print = (myObject) => {
         return Object.keys(myObject).map((key) => (typeof myObject[key] === 'object' ?
             <div><p>{key}</p> {print(myObject[key])}</div> :
