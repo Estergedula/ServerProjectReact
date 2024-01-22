@@ -8,7 +8,7 @@ const Todos = () => {
     const { user } = useContext(UserContext);
     const [display, setDisplay] = useState({ add: false, search: false })
     const nextTodoId = useRef(0)
-    const currentUpdateId = useRef(null)
+    const [currentUpdatedId, setCurrentUpdatedId] = useState()
     const orderOptions = [{ value: "id", label: "id" },
     { value: "completed", label: "completed" },
     { value: "alphabetical", label: "alphabetical" },
@@ -48,14 +48,6 @@ const Todos = () => {
                 return action.data;
             case "DELETE":
                 return state.filter(todo => todo.id != action.id)
-            case "DISPLAY":
-                return state.map((todo) => {
-                    if (todo.id === action.id) {
-                        return { ...todo, update: !todo.update };
-                    } else {
-                        return todo;
-                    }
-                });
             case "ADD":
                 return [...state, action.data]
             case "SORT":
@@ -92,9 +84,8 @@ const Todos = () => {
         fetch(`http://localhost:3000/todos/?userId=${user.id}`)
             .then(response => response.json())
             .then(data => {
-                return data.map(todo => { return { ...todo, update: false } })
+                dispatch({ type: "START", data: data })
             })
-            .then(initialTodos => { dispatch({ type: "START", data: initialTodos }) })
 
     }
     const [userTodos, dispatch] = useReducer(reducer, initialTodos);
@@ -220,40 +211,44 @@ const Todos = () => {
     return (
         <>
             <div className="operations">
-                <Select className="select" options={orderOptions} onChange={handleChangeOrder} placeholder="Sort by..." />
-                <span><Select className="select" options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
 
+                <Select className="select" options={orderOptions} onChange={handleChangeOrder} placeholder="Sort by..." />
+                <span>
+                    <Select className="select" options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
                     {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
                         <input type="text" placeholder="id" {...register("search")} /><br />
                         <button type="submit">Search</button> </form>}
-
                     {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event =>
-                        search(event.target.value)} />} </span>
+                        search(event.target.value)} />} 
+                </span>
 
-
-                <span><button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
-
-                    {display.add && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
+                <span>
+                    <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
+                    {display.add && 
+                    <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
                         <textarea type="text" placeholder="title" {...register("title")} /><br />
                         <button type="submit">Add</button>
-                    </form>}</span>
+                    </form>}
+                </span>
+
             </div>
 
             {userTodos.map((todo) => {
-                return <><div className="tasks" key={todo.id}><span className="idSpan">task Id:{todo.id}</span>
+                return <>
+                <div className="tasks" key={todo.id}>
+
+                    <span className="idSpan">task Id:{todo.id}</span>
                     <span>{todo.title}</span>
-                    <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) =>
-                        handleCheckBox(event, todo.id)} />
+                    <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) =>handleCheckBox(event, todo.id)} />
+
                         <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
-                        <button className="update" onClick={() => {
-                            if (todo.id != currentUpdateId.current) {
-                                dispatch({ type: "DISPLAY", id: currentUpdateId.current })
-                            }
-                            currentUpdateId.current = todo.id
-                            dispatch({ type: "DISPLAY", id: todo.id });
-                        }}></button></span>
+                        <button className="update" onClick={() => { 
+                            currentUpdatedId == todo.id ? setCurrentUpdatedId(null) : setCurrentUpdatedId(todo.id) }}></button>
+                    </span>
+
                 </div>
-                    {todo.update && <form onSubmit={handleSubmit(onSubmitUpdate)}>
+                    {currentUpdatedId == todo.id && 
+                    <form onSubmit={handleSubmit(onSubmitUpdate)}>
                         <textarea type="text" placeholder="title" {...register(`${todo.id}`)} /><br />
                         <button type="submit">Update</button>
                     </form>}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useParams, useNavigate, Link, Outlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import './Home.css'
 import { UserContext } from '../App'
 

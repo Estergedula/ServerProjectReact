@@ -20,13 +20,6 @@
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
 
 .tasks,.albums{
   margin-top: 20px;
@@ -48,6 +41,12 @@
   width: 120px;
 }
 
+.postBody{
+  width: 500px;
+  border-style: solid;
+  border-width: 5px;
+}
+
 .posts{
   align-items: center;
   display: flex;
@@ -61,11 +60,16 @@
 .update{
   background-image: url(./imgs/updatepng.png);
 }
-.showAllPost{
+.showPost{
+  padding: 0%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 13px;
+  height: 15px;
   margin-right: 10px;
-  background-image: url(./imgs/showMore.png);
+  background-image: url(./imgs/showPost1.png);
 }
-.delete,.update,.showAllPost{
+.delete,.update{
   background-size: cover;
   background-repeat: no-repeat;
   width: 43px;
@@ -90,4 +94,14 @@ nav{
 }
 .idSpan{
   margin-left: 10px;
+}
+.label{
+  font-weight: 700;
+}
+
+.postsContainer{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: left;
 }

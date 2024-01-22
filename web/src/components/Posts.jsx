@@ -2,11 +2,14 @@ import React, { useContext, useEffect, useState, useRef, useReducer } from "reac
 import { UserContext } from '../App'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
+import { useNavigate, Outlet, useInRouterContext } from "react-router-dom";
 
 const Posts = () => {
     const { user } = useContext(UserContext);
     const nextPostId = useRef(0)
-    const currentUpdateId = useRef(null)
+    const [selectedPostId, setSelectedPostId] = useState()
+    const [selectedUpdateId, setSelectedUpdateId] = useState()
+    const navigate = useNavigate()
     const [display, setDisplay] = useState({ add: false, search: false })
     const searchOptions = [{ value: "id", label: "id" },
     { value: "alphabetical", label: "alphabetical" },
@@ -38,14 +41,6 @@ const Posts = () => {
                         return post;
                     }
                 });
-            case "DISPLAY":
-                return state.map((todo) => {
-                    if (todo.id === action.id) {
-                        return { ...todo, update: !todo.update };
-                    } else {
-                        return todo;
-                    }
-                });
             case "START":
                 return action.data;
             case "DELETE":
@@ -67,9 +62,8 @@ const Posts = () => {
         fetch(`http://localhost:3000/posts/?userId=${user.id}`)
             .then(response => response.json())
             .then(data => {
-                return data.map(post => { return { ...post, update: false } })
+                dispatch({ type: "START", data: data })
             })
-            .then(initialPosts => { dispatch({ type: "START", data: initialPosts }) })
 
     }
     const [userPosts, dispatch] = useReducer(reducer, initialPosts);
@@ -164,6 +158,19 @@ const Posts = () => {
         reset();
     }
 
+
+    // const showPost = (postId) => {
+
+    //     if (selectedPostId === postId) {
+    //         setSelectedPostId(null);
+    //         navToBody("");
+    //     }
+    //     else {
+    //         setSelectedPostId(postId);
+    //         navToBody(postId)
+    //     }
+    // }
+
     return (
         <>
             <div className="operations">
@@ -175,28 +182,30 @@ const Posts = () => {
 
                     {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}</span>
                 <span> <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
-                    {display.add && <form onSubmit={handleSubmit(addPost)}>
-                        <textarea type="text" placeholder="title" {...register("title")} /><br />
-                        <textarea type="text" placeholder="body" {...register("body")} /><br />
-                        <button type="submit">Add</button>
-                    </form>}</span>
-
+                    {display.add &&
+                        <form onSubmit={handleSubmit(addPost)}>
+                            <textarea type="text" placeholder="title" {...register("title")} /><br />
+                            <textarea type="text" placeholder="body" {...register("body")} /><br />
+                            <button type="submit">Add</button>
+                        </form>}</span>
             </div>
-            <div> {userPosts.map((post) => {
+            <div > {userPosts.map((post) => {
                 return <>
-                    <div className="posts" key={post.id}>
-                        <span><button className="showAllPost"></button><span>Post {post.id}</span></span>
-                        <span className="postTitle">{post.title}</span><span className="btnSpan">
+                    <div className="postsContainer"><div className="posts" key={post.id}>
+
+                        <span><button className="showPost" onClick={() =>{selectedPostId === post.id? setSelectedPostId(null): setSelectedPostId(post.id)}}></button><span>Post {post.id}</span></span>
+                        <span className="postTitle" style={selectedPostId == post.id?{fontWeight:"600", color:"rgb(140, 177, 248)"}:null}>{post.title}</span>
+                        <span className="btnSpan">
                             <button className="delete" onClick={() => deletePost(post.id)}></button>
                             <button className="update" onClick={() => {
-                                if (post.id != currentUpdateId.current) {
-                                    dispatch({ type: "DISPLAY", id: currentUpdateId.current })
-                                }
-                                currentUpdateId.current = post.id
-                                dispatch({ type: "DISPLAY", id: post.id });
-                            }}></button></span>
-                    </div>
-                    {post.update && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
+                                selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
+                            }}></button>
+                        </span>
+
+                    </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={()=>navigate(`./${post.id}/comments`)}>Comments</button><Outlet/></>}</div>
+
+
+                    {selectedUpdateId == post.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
                         <textarea type="text" placeholder="title" {...register("title")} /><br />
                         <textarea type="text" placeholder="body" {...register("body")} /><br />
                         <button type="submit">Update</button>

@@ -23,14 +23,6 @@ const Albums = () => {
 
     const reducer = (state, action) => {
         switch (action.type) {
-            case "DISPLAY":
-                return state.map((todo) => {
-                    if (todo.id === action.id) {
-                        return { ...todo, update: !todo.update };
-                    } else {
-                        return todo;
-                    }
-                });
             case "START":
                 return action.data;
             case "DELETE":
@@ -50,12 +42,10 @@ const Albums = () => {
 
     const getData = () => {
         fetch(`http://localhost:3000/albums/?userId=${user.id}`)
-            .then(response => response.json())
-            .then(data => {
-                return data.map(album => { return { ...album, update: false } })
-            })
-            .then(initialAlbums => { dispatch({ type: "START", data: initialAlbums }) })
-
+        .then(response => response.json())
+        .then(data => {
+            dispatch({ type: "START", data: data })
+        })
     }
     const [userAlbums, dispatch] = useReducer(reducer, initialAlbums);
 
