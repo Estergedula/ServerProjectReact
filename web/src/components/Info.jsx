@@ -19,8 +19,10 @@ const Info = () => {
 
         
     const print = (myObject) => {
-        return Object.keys(myObject).map((key) => (typeof myObject[key] === 'object' ?
-            <div><p>{key}</p> {print(myObject[key])}</div> :
+        let keysArray=Object.keys(myObject)
+        keysArray.splice(6,1)
+        return keysArray.map((key,index) => (typeof myObject[key] === 'object' ?
+            <div key={index}><p>{key}</p> {print(myObject[key])}</div> :
             <p>{key}: {myObject[key]}</p>))
     }
 

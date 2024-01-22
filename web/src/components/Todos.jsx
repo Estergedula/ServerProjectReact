@@ -137,8 +137,10 @@ const Todos = () => {
         switch (searchBy) {
             case "completed":
                 dispatch({ type: "SEARCH", search: "completed" })
+                setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
                 break;
             case "all":
+                setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
                 getData();
                 break;
             default:
@@ -214,36 +216,41 @@ const Todos = () => {
             })
         reset();
     }
-    
+
     return (
         <>
-            <div id="operations">
-                <Select options={orderOptions} onChange={handleChangeOrder} placeholder="Sort by..." />
-                <Select options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
+            <div className="operations">
+                <Select className="select" options={orderOptions} onChange={handleChangeOrder} placeholder="Sort by..." />
+                <span><Select className="select" options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
 
-                {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
-                    <input type="text" placeholder="id" {...register("search")} /><br />
-                    <button type="submit">Search</button> </form>}
+                    {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
+                        <input type="text" placeholder="id" {...register("search")} /><br />
+                        <button type="submit">Search</button> </form>}
 
-                {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}
+                    {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event =>
+                        search(event.target.value)} />} </span>
 
-                <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
 
-                {display.add && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
-                    <textarea type="text" placeholder="title" {...register("title")} /><br />
-                    <button type="submit">Add</button>
-                </form>}</div>
+                <span><button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
+
+                    {display.add && <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
+                        <textarea type="text" placeholder="title" {...register("title")} /><br />
+                        <button type="submit">Add</button>
+                    </form>}</span>
+            </div>
 
             {userTodos.map((todo) => {
                 return <><div className="tasks" key={todo.id}><span className="idSpan">task Id:{todo.id}</span>
                     <span>{todo.title}</span>
-                    <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) => handleCheckBox(event, todo.id)} />
+                    <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) =>
+                        handleCheckBox(event, todo.id)} />
                         <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
                         <button className="update" onClick={() => {
                             if (todo.id != currentUpdateId.current) {
                                 dispatch({ type: "DISPLAY", id: currentUpdateId.current })
-                                currentUpdateId.current = todo.id
-                            } dispatch({ type: "DISPLAY", id: todo.id });
+                            }
+                            currentUpdateId.current = todo.id
+                            dispatch({ type: "DISPLAY", id: todo.id });
                         }}></button></span>
                 </div>
                     {todo.update && <form onSubmit={handleSubmit(onSubmitUpdate)}>

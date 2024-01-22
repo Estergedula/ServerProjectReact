@@ -49,6 +49,7 @@
 }
 
 .posts{
+  align-items: center;
   display: flex;
   justify-content:space-between;
   width: 780px;
@@ -60,7 +61,11 @@
 .update{
   background-image: url(./imgs/updatepng.png);
 }
-.delete,.update{
+.showAllPost{
+  margin-right: 10px;
+  background-image: url(./imgs/showMore.png);
+}
+.delete,.update,.showAllPost{
   background-size: cover;
   background-repeat: no-repeat;
   width: 43px;
@@ -69,4 +74,17 @@
 }
 .postTitle{
 margin-left: 20px;
+}
+.operations{
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around
+}
+.select{
+  width: 300px;
+}
+nav{
+  display: flex;
+  justify-content: space-around;
+  width: 500px;
 }

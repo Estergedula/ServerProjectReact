@@ -166,36 +166,41 @@ const Posts = () => {
 
     return (
         <>
-            <Select options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
+            <div className="operations">
+                <span><Select className="select" options={searchOptions} onChange={handleChangeSearch} placeholder="Search by..." />
 
-            {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
-                <input type="text" placeholder="id" {...register("search")} /><br />
-                <button type="submit">Search</button> </form>}
+                    {display.search == "id" && <form onSubmit={handleSubmit((data) => search(data["search"]))}>
+                        <input type="text" placeholder="id" {...register("search")} /><br />
+                        <button type="submit">Search</button> </form>}
 
-            {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}
-            <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
-            {display.add && <form onSubmit={handleSubmit(addPost)}>
-                <textarea type="text" placeholder="title" {...register("title")} /><br />
-                <textarea type="text" placeholder="body" {...register("body")} /><br />
-                <button type="submit">Add</button>
-            </form>}
+                    {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}</span>
+                <span> <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
+                    {display.add && <form onSubmit={handleSubmit(addPost)}>
+                        <textarea type="text" placeholder="title" {...register("title")} /><br />
+                        <textarea type="text" placeholder="body" {...register("body")} /><br />
+                        <button type="submit">Add</button>
+                    </form>}</span>
+
+            </div>
             <div> {userPosts.map((post) => {
-                return <><div className="posts" key={post.id}><span>Post {post.id}</span>
-                    <span className="postTitle">{post.title}</span><span className="btnSpan">
-                        <button className="delete" onClick={() => deletePost(post.id)}></button>
-                        <button className="update" onClick={() => {
-                            if (post.id != currentUpdateId.current) {
-                                dispatch({ type: "DISPLAY", id: currentUpdateId.current })
+                return <>
+                    <div className="posts" key={post.id}>
+                        <span><button className="showAllPost"></button><span>Post {post.id}</span></span>
+                        <span className="postTitle">{post.title}</span><span className="btnSpan">
+                            <button className="delete" onClick={() => deletePost(post.id)}></button>
+                            <button className="update" onClick={() => {
+                                if (post.id != currentUpdateId.current) {
+                                    dispatch({ type: "DISPLAY", id: currentUpdateId.current })
+                                }
                                 currentUpdateId.current = post.id
-                            } dispatch({ type: "DISPLAY", id: post.id });
-                        }}></button></span>
-                </div>
+                                dispatch({ type: "DISPLAY", id: post.id });
+                            }}></button></span>
+                    </div>
                     {post.update && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
                         <textarea type="text" placeholder="title" {...register("title")} /><br />
-                        <textarea type="text" placeholder="body" {...register("body")} /><br/>
+                        <textarea type="text" placeholder="body" {...register("body")} /><br />
                         <button type="submit">Update</button>
-                    </form>
-                    }
+                    </form>}
                 </>
             })}
             </div>
