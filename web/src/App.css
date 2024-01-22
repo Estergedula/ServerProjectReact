@@ -28,7 +28,7 @@
   color: #888;
 }
 
-.tasks{
+.tasks,.albums{
   margin-top: 20px;
   font-size: 17px;
   display: flex;
@@ -87,4 +87,7 @@ nav{
   display: flex;
   justify-content: space-around;
   width: 500px;
+}
+.idSpan{
+  margin-left: 10px;
 }
