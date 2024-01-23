@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useReducer, useState } from "reac
 import { UserContext } from './UserProvider'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 
 const Albums = () => {
@@ -12,7 +12,6 @@ const Albums = () => {
     const searchOptions = [{ value: "id", label: "id" },
     { value: "alphabetical", label: "alphabetical" },
     { value: "all", label: "all" }]
-    let initialAlbums = []
     const {
         register,
         handleSubmit,
@@ -45,6 +44,7 @@ const Albums = () => {
                 return state;
         }
     }
+    const [userAlbums, dispatch] = useReducer(reducer, []);
 
     const getData = () => {
         fetch(`http://localhost:3000/albums/?userId=${user.id}`)
@@ -53,9 +53,6 @@ const Albums = () => {
                 dispatch({ type: "START", data: data })
             })
     }
-    const [userAlbums, dispatch] = useReducer(reducer, initialAlbums);
-
-
 
     const getNextId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/albumsId`)
@@ -74,8 +71,7 @@ const Albums = () => {
                 value: nextAlbumId.current,
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         })
         nextAlbumId.current = nextAlbumId.current + 1;
@@ -106,10 +102,11 @@ const Albums = () => {
                 userId: user.id,
                 id: `${nextAlbumId.current}`,
                 title: albumData.title,
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })})
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            })
+        })
             .then((response) => response.json())
             .then(data => {
                 dispatch({ type: "ADD", data: data });
@@ -130,13 +127,14 @@ const Albums = () => {
                     {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}</span>
                 <span> <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
                     {display.add && <form onSubmit={handleSubmit(addAlbum)}>
-                        <textarea type="text" placeholder="title" {...register("title")} /><br />
+                        <textarea type="text" placeholder="title" {...register("title", { required: true })} /><br />
                         <button type="submit">Add</button>
                     </form>}</span>
 
             </div>
-            {userAlbums.map((album) => {
-                return <Link to = {`${album.id}/photos`} state= {album.title}><div className="albums" key={album.id}><span className="idSpan">album Id:{album.id}</span>
+            {userAlbums.map((album, index) => {
+                return <Link to={`${album.id}/photos`} state={album.title} key={index}><div className="albums" key={album.id}>
+                    <span className="idSpan">album Id:{album.id}</span>
                     <span>{album.title}</span>
                 </div>
                 </Link>

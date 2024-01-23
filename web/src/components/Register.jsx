@@ -1,7 +1,7 @@
-import React, { useRef ,useContext ,useState, useEffect} from "react";
+import React, { useRef, useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import  {UserContext}  from './UserProvider'
+import { UserContext } from './UserProvider'
 
 
 const Register = () => {
@@ -33,7 +33,7 @@ const Register = () => {
   useEffect(() => {
     if (user != null) {
       navigate(`/home/users/${user.id}`)
-  }
+    }
     fetch(`http://localhost:3000/ContinuousNumber/usersId`)
       .then(response => {
         return response.json()
@@ -116,7 +116,7 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(data => {
-        const currentUser = { username: data.username,  name: data.name,id: data.id,email:data.email };
+        const currentUser = { username: data.username, name: data.name, id: data.id, email: data.email };
         setCurrentUser(currentUser)
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       });
@@ -159,7 +159,7 @@ const Register = () => {
         })} />
         {errors.verifyPassword && (
           <p className="errorMsg">{errors.verifyPassword.message}</p>)}<br />
-        <button type="submit">click me!</button><br />
+        <button type="submit">Register</button><br />
         <Link to="/login">already registered?</Link>
       </form> :
         <form onSubmit={handleSubmit(userData)}>

@@ -63,9 +63,7 @@ const Photos = () => {
 
     const getNextId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/photosId`)
-            .then(response => {
-                return response.json()
-            })
+            .then(response => response.json())
             .then(data => {
                 nextPhoto.current = data.value + 1;
             })
@@ -78,8 +76,7 @@ const Photos = () => {
                 value: nextPhoto.current,
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         })
         nextPhoto.current = nextPhoto.current + 1;
@@ -114,7 +111,7 @@ const Photos = () => {
         dispatch({ type: "DELETE", id: photoId });
     }
 
-    const onSubmitUpdate = (photoId, dataInput) => {
+    const onSubmitUpdate = (photoId, photoData) => {
         fetch(`http://localhost:3000/photos/${photoId}`, {
             method: 'PATCH',
             body: JSON.stringify({
@@ -123,8 +120,7 @@ const Photos = () => {
                 thumbnailUrl: photoData.thumbnailUrl
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         }).then(response => response.json())
             .then(data => {
@@ -139,20 +135,24 @@ const Photos = () => {
             <button onClick={() => { setAddDisplay(display => !display) }}>Add photo</button>
             {addDisplay &&
                 <form onSubmit={handleSubmit(addPhoto)}>
-                    <textarea type="text" placeholder="title" {...register("title")} /><br />
-                    <input type="url" placeholder="url" {...register("url")} /><br />
+                    <textarea type="text" placeholder="title" {...register("title", { required: true })} /><br />
+                    <input type="url" placeholder="url" {...register("url", { required: true })} /><br />
                     <input type="url" placeholder="thumbnailUrl" {...register("thumbnailUrl", { required: true })} /><br />
                     <button type="submit">Add</button>
-                </form>}
+                </form>
+            }
             <div className="imgs">{currentPhotos.map((photo) => {
                 return <span key={photo.id}>
                     <p className="photoTitle"><b>Title: </b>{photo.title}</p>
-                    {selectedUpdateId === photo.id ? <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
-                    <textarea type="text" defaultValue={photo.title} placeholder="title" {...register("title")} /><br />
-                    <input type="url" placeholder="url" {...register("url")} /><br />
-                    <input type="url" placeholder="thumbnailUrl" {...register("thumbnailUrl", { required: true })} /><br />
-                    <button type="submit">Update</button>
-                </form> : <img src={photo.thumbnailUrl} alt="" />}
+                    {selectedUpdateId === photo.id ?
+                        <form onSubmit={handleSubmit(data => onSubmitUpdate(photo.id, data))}>
+                            <textarea type="text" defaultValue={photo.title} placeholder="title" {...register("title", { required: true })} /><br />
+                            <input type="url" placeholder="url" defaultValue={photo.url}{...register("url", { required: true })} /><br />
+                            <input type="url" placeholder="thumbnailUrl" defaultValue={photo.thumbnailUrl}{...register("thumbnailUrl", { required: true })} /><br />
+                            <button type="submit">Update</button>
+                        </form> :
+                        <img src={photo.thumbnailUrl} />
+                    }
                     <span className="photoBtns">
                         <button className="delete" onClick={() => deletePhoto(photo.id)}></button>
                         <button className="update" onClick={() => {

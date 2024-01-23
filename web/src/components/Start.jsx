@@ -1,13 +1,18 @@
+import { useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import  {UserContext}  from './UserProvider'
 
-import { Link } from 'react-router-dom'
 export default function Start(){
-   
-    return (
-        <nav>
-            <dl>
-                <dt><Link to = "/login">Login</Link></dt>
-                <dt><Link to = "/register">Register</Link></dt>
-            </dl>
-        </nav>
+   const { user } = useContext(UserContext);
+   const navigete = useNavigate()
+   useEffect(
+    ()=>{
+        if (user===null) {
+            navigete("/login")   
+        }
+        navigete(`/home/users/${user.id}`)
+    }
+   )
+    return (<></>
     )
 }

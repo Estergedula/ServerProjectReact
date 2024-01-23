@@ -1,7 +1,7 @@
-import React, { useContext ,useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom'
-import { useForm} from "react-hook-form";
-import  {UserContext}  from './UserProvider'
+import { useForm } from "react-hook-form";
+import { UserContext } from './UserProvider'
 const Login = () => {
 
     const navigate = useNavigate();
@@ -12,7 +12,6 @@ const Login = () => {
             navigate(`/home/users/${user.id}`)
         }
     }, [])
-
 
     const {
         register,
@@ -37,17 +36,18 @@ const Login = () => {
                     return;
                 }
                 reset();
-                const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id,email:data[0].email };
+                const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id, email: data[0].email };
                 setCurrentUser(currentUser);
                 localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 navigate(`/home/users/${data[0].id}`)
             })
     }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <input type="text" placeholder="user name" {...register("userName", { required: true })} /><br />
             <input type="password" placeholder="password" {...register("password", { required: true })} /><br />
-            <button>click me!</button><br />
+            <button>Log in</button><br />
             <Link to="/register">not registered yet?</Link>
         </form>
     )

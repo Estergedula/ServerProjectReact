@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext, useReducer } from "react";
-import  {UserContext}  from './UserProvider'
+import { UserContext } from './UserProvider'
 import { useForm } from "react-hook-form";
 import Select from 'react-select'
 
@@ -96,20 +96,15 @@ const Todos = () => {
     }
     const [userTodos, dispatch] = useReducer(reducer, initialTodos);
 
-
-
     const getNextId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/todosId`)
             .then(response => {
                 return response.json()
             })
             .then(data => {
-                console.log(data.value)
                 nextTodoId.current = data.value + 1;
-                console.log(nextTodoId.current)
             })
     }
-
 
     const updateId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/todosId`, {
@@ -118,8 +113,7 @@ const Todos = () => {
                 value: nextTodoId.current,
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         })
         nextTodoId.current = nextTodoId.current + 1;
@@ -148,6 +142,7 @@ const Todos = () => {
             setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
         }
     }
+
     const handleCheckBox = (event, taskId) => {
         fetch(`http://localhost:3000/todos/${taskId}`, {
             method: 'PATCH',
@@ -155,14 +150,12 @@ const Todos = () => {
                 completed: event.target.checked,
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => response.json())
             .then(data => dispatch({ type: "CHANGE", data: data }))
     }
-
 
     const deleteTodo = async (taskId) => {
         await fetch(`http://localhost:3000/todos/${taskId}`, {
@@ -179,7 +172,6 @@ const Todos = () => {
                 id: `${nextTodoId.current}`,
                 title: todoTitle,
                 completed: false
-
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -200,14 +192,13 @@ const Todos = () => {
                 title: dataInput[id]
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         }).then(response => response.json())
             .then(data => {
                 dispatch({ type: "CHANGE", data: data })
+                reset();
             })
-        reset();
     }
 
     return (
@@ -228,15 +219,16 @@ const Todos = () => {
                     <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
                     {display.add &&
                         <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
-                            <textarea type="text" placeholder="title" {...register("title")} /><br />
+                            <textarea type="text" placeholder="title" {...register("title", { required: true })} /><br />
                             <button type="submit">Add</button>
-                        </form>}
+                        </form>
+                    }
                 </span>
 
             </div>
             {userTodos.todosDisplay.map((todo) => {
-                return <>
-                    <div className="tasks" key={todo.id}>
+                return <div key={todo.id}>
+                    <div className="tasks">
 
                         <span className="idSpan">task Id:{todo.id}</span>
                         <span>{todo.title}</span>
@@ -245,16 +237,17 @@ const Todos = () => {
                             <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
                             <button className="update" onClick={() => {
                                 currentUpdatedId == todo.id ? setCurrentUpdatedId(null) : setCurrentUpdatedId(todo.id)
-                            }}></button>
+                            }}>
+                            </button>
                         </span>
 
                     </div>
                     {currentUpdatedId == todo.id &&
                         <form onSubmit={handleSubmit(onSubmitUpdate)}>
-                            <textarea type="text" placeholder="title" {...register(`${todo.id}`)} /><br />
+                            <textarea type="text" defaultValue={todo.title} placeholder="title" {...register(`${todo.id}`, { required: true })} /><br />
                             <button type="submit">Update</button>
                         </form>}
-                </>
+                </div>
             })}
         </>
     )

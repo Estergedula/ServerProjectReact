@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef, useReducer } from "react";
 import { UserContext } from './UserProvider'
 import { useForm } from "react-hook-form";
-import { useNavigate, Outlet, useInRouterContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 const Comments = () => {
@@ -17,7 +17,6 @@ const Comments = () => {
         reset,
     } = useForm();
 
-
     useEffect(
         () => {
             if (user == null) {
@@ -25,8 +24,8 @@ const Comments = () => {
             }
             getData()
             getNextId();
-        }, [])
-
+        }, []
+    )
 
     const reducer = (state, action) => {
         switch (action.type) {
@@ -73,8 +72,7 @@ const Comments = () => {
                 value: nextCommentId.current,
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         })
         nextCommentId.current = nextCommentId.current + 1;
@@ -107,7 +105,7 @@ const Comments = () => {
                 reset()
             });
         updateId();
-    }    
+    }
 
     const onSubmitUpdate = (postId, dataInput) => {
         fetch(`http://localhost:3000/comments/${postId}`, {
@@ -117,8 +115,7 @@ const Comments = () => {
                 body: dataInput.body
             }),
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
+                'Content-type': 'application/json; charset=UTF-8',
             },
         }).then(response => response.json())
             .then(data => {
@@ -132,10 +129,11 @@ const Comments = () => {
             <button onClick={() => { setAddDisplay(display => !display) }}>+</button>
             {addDisplay &&
                 <form onSubmit={handleSubmit(addComment)}>
-                    <textarea type="text" placeholder="name" {...register("name")} /><br />
-                    <textarea type="text" placeholder="body" {...register("body")} /><br />
+                    <textarea type="text" placeholder="name" {...register("name", { required: true })} /><br />
+                    <textarea type="text" placeholder="body" {...register("body", { required: true })} /><br />
                     <button type="submit">Add</button>
-                </form>}
+                </form>
+            }
             {currentComments.map((comment) => {
                 return (
                     <div key={comment.id}>
@@ -150,8 +148,8 @@ const Comments = () => {
                             }}></button>
                         </span>}
                         {selectedUpdateId == comment.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(comment.id, data))}>
-                            <textarea type="text" placeholder="name" {...register("name")} /><br />
-                            <textarea type="text" placeholder="body" {...register("body")} /><br />
+                            <textarea type="text" defaultValue={photo.name} placeholder="name" {...register("name", { required: true })} /><br />
+                            <textarea type="text" defaultValue={photo.body} placeholder="body" {...register("body", { required: true })} /><br />
                             <button type="submit">Update</button>
                         </form>}
                     </div>)

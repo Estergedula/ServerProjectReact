@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useRef, useReducer } from "reac
 import { UserContext } from './UserProvider'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
-import { useNavigate, Outlet, useInRouterContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Posts = () => {
     const { user } = useContext(UserContext);
@@ -32,8 +32,8 @@ const Posts = () => {
             }
             getData()
             getNextId();
-        }, [])
-
+        }, []
+    )
 
     const reducer = (state, action) => {
         switch (action.type) {
@@ -78,10 +78,10 @@ const Posts = () => {
             .then(response => response.json())
             .then(data => {
                 dispatch({ type: "START", data: data })
-            })
+            }
+            )
 
     }
-
 
     const getNextId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/postsId`)
@@ -90,7 +90,8 @@ const Posts = () => {
             })
             .then(data => {
                 nextPostId.current = data.value + 1;
-            })
+            }
+            )
     }
 
     const updateId = () => {
@@ -116,7 +117,6 @@ const Posts = () => {
             setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
         }
     }
-
 
     const search = (data) => {
         dispatch({ type: "SEARCH", search: display.search, data: data });
@@ -146,11 +146,11 @@ const Posts = () => {
         updateId();
     }
 
-    const deletePost = async (taskId) => {
-        await fetch(`http://localhost:3000/posts/${taskId}`, {
+    const deletePost = async (postId) => {
+        await fetch(`http://localhost:3000/posts/${postId}`, {
             method: 'DELETE',
         })
-        dispatch({ type: "DELETE", id: taskId });
+        dispatch({ type: "DELETE", id: postId });
     }
 
     const onSubmitUpdate = (postId, dataInput) => {
@@ -185,16 +185,17 @@ const Posts = () => {
                 <span> <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
                     {display.add &&
                         <form onSubmit={handleSubmit(addPost)}>
-                            <textarea type="text" placeholder="title" {...register("title")} /><br />
-                            <textarea type="text" placeholder="body" {...register("body")} /><br />
+                            <textarea type="text" placeholder="title" {...register("title", { required: true })} /><br />
+                            <textarea type="text" placeholder="body" {...register("body", { required: true })} /><br />
                             <button type="submit">Add</button>
                         </form>}
                 </span>
             </div>
             <div >
-                {userPosts.postsDisplay.map((post) => {
-                    return <>
-                        <div className="postsContainer">
+                {userPosts.postsDisplay.map((post, index) => {
+                    return (
+                        <div className="postsContainer" key={index}>
+
                             <div className="posts">
 
                                 <span>
@@ -206,18 +207,21 @@ const Posts = () => {
                                     <button className="delete" onClick={() => deletePost(post.id)}></button>
                                     <button className="update" onClick={() => {
                                         selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
-                                    }}></button>
+                                    }}>
+                                    </button>
                                 </span>
 
                             </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}
-                        </div>
 
-                        {selectedUpdateId == post.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
-                            <textarea type="text" placeholder="title" {...register("title")} /><br />
-                            <textarea type="text" placeholder="body" {...register("body")} /><br />
-                            <button type="submit">Update</button>
-                        </form>}
-                    </>
+                            {selectedUpdateId == post.id &&
+                                <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
+                                    <textarea type="text" defaultValue={post.title} placeholder="title" {...register("title", { required: true })} /><br />
+                                    <textarea type="text" defaultValue={post.title} placeholder="body" {...register("body", { required: true })} /><br />
+                                    <button type="submit">Update</button>
+                                </form>
+                            }
+                        </div>
+                    )
                 })}
             </div>
 
