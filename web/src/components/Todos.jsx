@@ -234,7 +234,6 @@ const Todos = () => {
                 </span>
 
             </div>
-            {console.log(userTodos)}
             {userTodos.todosDisplay.map((todo) => {
                 return <>
                     <div className="tasks" key={todo.id}>

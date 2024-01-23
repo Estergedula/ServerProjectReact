@@ -4,15 +4,20 @@
   padding: 2rem;
   text-align: center;
   display: flex;
-    flex-direction: column;
-    align-items: center;
+  flex-direction: column;
+  align-items: center;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
 
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -25,45 +30,50 @@
 }
 
 
-.tasks,.albums{
+.tasks,
+.albums {
   margin-top: 20px;
   font-size: 17px;
   display: flex;
 
-  justify-content:space-between;
+  justify-content: space-between;
   width: 780px;
   height: 60px;
   align-items: center;
-  background-color:rgb(140, 177, 248);
+  background-color: rgb(140, 177, 248);
   border-radius: 10px;
 }
-.btnSpan{
+
+.btnSpan {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   margin-right: 10px;
   align-items: center;
   width: 120px;
 }
 
-.postBody{
+.postBody {
   width: 500px;
   border-width: 5px;
 }
 
-.posts{
+.posts {
   align-items: center;
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   width: 780px;
   height: 60px;
 }
-.delete{
+
+.delete {
   background-image: url(./imgs/garbage.png);
 }
-.update{
+
+.update {
   background-image: url(./imgs/updatepng.png);
 }
-.showPost{
+
+.showPost {
   padding: 0%;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -72,39 +82,76 @@
   margin-right: 10px;
   background-image: url(./imgs/showPost1.png);
 }
-.delete,.update{
+
+.delete,
+.update {
   background-size: cover;
   background-repeat: no-repeat;
+  border: none;
   width: 43px;
   height: 45px;
 
 }
-.postTitle{
-margin-left: 20px;
+
+.postTitle {
+  margin-left: 20px;
 }
-.operations{
+
+.operations {
   margin-top: 20px;
   display: flex;
   justify-content: space-around
 }
-.select{
+
+.select {
   width: 300px;
 }
-nav{
+
+nav {
   display: flex;
   justify-content: space-around;
   width: 500px;
 }
-.idSpan{
+
+.idSpan {
   margin-left: 10px;
 }
-.label{
+
+.label {
   font-weight: 700;
 }
 
-.postsContainer{
+.postsContainer {
   display: flex;
   align-items: center;
   flex-direction: column;
   text-align: left;
+}
+
+img {
+  width: 250px;
+  height: 250px;
+}
+
+.imgs {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  column-gap: 60px;
+  row-gap: 45px;
+  margin-bottom: 40px;
+}
+
+.photoTitle {
+  height: 75px;
+  display: flex;
+  align-items: baseline;
+}
+
+.photoBtns {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+b{
+  text-align: center;
 }

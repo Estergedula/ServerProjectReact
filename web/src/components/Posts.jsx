@@ -19,7 +19,7 @@ const Posts = () => {
         handleSubmit,
         reset,
     } = useForm();
-    
+
     let initialPosts = {
         posts: [],
         postsDisplay: []
@@ -171,19 +171,6 @@ const Posts = () => {
         reset();
     }
 
-
-    // const showPost = (postId) => {
-
-    //     if (selectedPostId === postId) {
-    //         setSelectedPostId(null);
-    //         navToBody("");
-    //     }
-    //     else {
-    //         setSelectedPostId(postId);
-    //         navToBody(postId)
-    //     }
-    // }
-
     return (
         <>
             <div className="operations">
@@ -193,40 +180,45 @@ const Posts = () => {
                         <input type="text" placeholder="id" {...register("search")} /><br />
                         <button type="submit">Search</button> </form>}
 
-                    {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}</span>
+                    {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event => search(event.target.value)} />}
+                </span>
                 <span> <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
                     {display.add &&
                         <form onSubmit={handleSubmit(addPost)}>
                             <textarea type="text" placeholder="title" {...register("title")} /><br />
                             <textarea type="text" placeholder="body" {...register("body")} /><br />
                             <button type="submit">Add</button>
-                        </form>}</span>
+                        </form>}
+                </span>
             </div>
-            <div > {userPosts.postsDisplay.map((post) => {
-                return <>
-                    <div className="postsContainer"><div className="posts" key={post.id}>
+            <div >
+                {userPosts.postsDisplay.map((post) => {
+                    return <>
+                        <div className="postsContainer">
+                            <div className="posts">
 
-                        <span>
-                            <button className="showPost" onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button>
-                            <span>Post {post.id}</span></span>
-                        <span className="postTitle" style={selectedPostId == post.id ? { fontWeight: "600", color: "rgb(140, 177, 248)" } : null}>{post.title}</span>
-                        <span className="btnSpan">
-                            <button className="delete" onClick={() => deletePost(post.id)}></button>
-                            <button className="update" onClick={() => {
-                                selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
-                            }}></button>
-                        </span>
+                                <span>
+                                    <button className="showPost" onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button>
+                                    <span>Post {post.id}</span>
+                                </span>
+                                <span className="postTitle" style={selectedPostId == post.id ? { fontWeight: "600", color: "rgb(140, 177, 248)" } : null}>{post.title}</span>
+                                <span className="btnSpan">
+                                    <button className="delete" onClick={() => deletePost(post.id)}></button>
+                                    <button className="update" onClick={() => {
+                                        selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
+                                    }}></button>
+                                </span>
 
-                    </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}</div>
+                            </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}
+                        </div>
 
-
-                    {selectedUpdateId == post.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
-                        <textarea type="text" placeholder="title" {...register("title")} /><br />
-                        <textarea type="text" placeholder="body" {...register("body")} /><br />
-                        <button type="submit">Update</button>
-                    </form>}
-                </>
-            })}
+                        {selectedUpdateId == post.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
+                            <textarea type="text" placeholder="title" {...register("title")} /><br />
+                            <textarea type="text" placeholder="body" {...register("body")} /><br />
+                            <button type="submit">Update</button>
+                        </form>}
+                    </>
+                })}
             </div>
 
         </>

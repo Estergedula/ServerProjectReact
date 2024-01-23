@@ -8,6 +8,7 @@ import Info from './components/Info'
 import Albums from './components/Albums'
 import Posts from './components/Posts'
 import Todos from './components/Todos'
+import Photos from './components/Photos'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Comments from './components/Comments'
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="albums" element={<Albums />} />
             <Route path="posts" element={<Posts />} />
             <Route path="posts/:id/comments" element={<Comments />} />
+            <Route path="albums/:id/photos" element={<Photos />} />
           </Route>
           <Route path="/register" element={<Register />} />
         </Routes>
