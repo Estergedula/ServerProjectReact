@@ -1,12 +1,11 @@
 import React, { useContext ,useEffect} from "react";
 import { Link, useNavigate } from 'react-router-dom'
-import { memo, useState } from "react";
 import { useForm} from "react-hook-form";
-import { UserContext } from '../App'
+import  {UserContext}  from './UserProvider'
 const Login = () => {
 
     const navigate = useNavigate();
-    const { user, setUser } = useContext(UserContext);
+    const { user, setCurrentUser } = useContext(UserContext);
 
     useEffect(() => {
         if (user != null) {
@@ -39,7 +38,7 @@ const Login = () => {
                 }
                 reset();
                 const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id };
-                setUser(currentUser);
+                setCurrentUser(currentUser);
                 localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 navigate(`/home/users/${data[0].id}`)
             })

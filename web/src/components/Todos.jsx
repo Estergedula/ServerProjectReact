@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useContext, useReducer } from "react";
-import { UserContext } from '../App'
+import  {UserContext}  from './UserProvider'
 import { useForm } from "react-hook-form";
 import Select from 'react-select'
 
@@ -22,7 +22,10 @@ const Todos = () => {
         handleSubmit,
         reset,
     } = useForm();
-    let initialTodos = []
+    let initialTodos = {
+        todos: [],
+        todosDisplay: []
+    }
 
     useEffect(
         () => {
@@ -37,43 +40,46 @@ const Todos = () => {
     const reducer = (state, action) => {
         switch (action.type) {
             case "CHANGE":
-                return state.map((todo) => {
-                    if (todo.id == action.data.id) {
-                        return action.data;
-                    } else {
-                        return todo;
-                    }
-                });
+                return {
+                    todos: state.todos.map((todo) => {
+                        if (todo.id == action.data.id) { return action.data; }
+                        else { return todo; }
+                    }),
+                    todosDisplay: state.todosDisplay.map((todo) => {
+                        if (todo.id == action.data.id) { return action.data; }
+                        else { return todo; }
+                    })
+                }
             case "START":
-                return action.data;
+                return { todos: action.data, todosDisplay: action.data }
             case "DELETE":
-                return state.filter(todo => todo.id != action.id)
+                return {
+                    todos: state.todos.filter(todo => todo.id != action.id),
+                    todosDisplay: state.todosDisplay.filter(todo => todo.id != action.id)
+                }
             case "ADD":
-                return [...state, action.data]
+                return { todos: [...state.todos, action.data], todosDisplay: [...state.todosDisplay, action.data] }
             case "SORT":
-                let sortedArray = []
                 switch (action.orderBy) {
                     case "alphabetical":
-                        sortedArray = [...state].sort((todo1, todo2) => todo1.title > todo2.title ? 1 : -1)
-                        break;
+                        return { ...state, todosDisplay: state.todos.sort((todo1, todo2) => todo1.title > todo2.title ? 1 : -1) }
                     case "completed":
-                        sortedArray = [...state].sort((todo1, todo2) => todo1.completed < todo2.completed ? 1 : -1)
-                        break
+                        return { ...state, todosDisplay: state.todos.sort((todo1, todo2) => todo1.completed < todo2.completed ? 1 : -1) }
                     case "random":
-                        sortedArray = [...state].sort(() => Math.random() > 0.5 ? 1 : -1);
-                        break;
+                        return { ...state, todosDisplay: state.todos.sort(() => Math.random() > 0.5 ? 1 : -1) }
                     default:
-                        sortedArray = [...state].sort((todo1, todo2) => todo1.id - todo2.id);
+                        return { ...state, todosDisplay: state.todos.sort((todo1, todo2) => todo1.id - todo2.id) }
                 }
-                return sortedArray;
             case "SEARCH":
                 switch (action.search) {
                     case "id":
-                        return state.filter(todo => todo.id == action.data)
+                        return { ...state, todosDisplay: state.todos.filter(todo => todo.id == action.data) }
                     case "completed":
-                        return state.filter(todo => todo.completed == true);
+                        return { ...state, todosDisplay: state.todos.filter(todo => todo.completed == true) }
+                    case "all":
+                        return { ...state, todosDisplay: state.todos }
                     default:
-                        return state.filter(todo => todo.title.includes(action.data));
+                        return { ...state, todosDisplay: state.todos.filter(todo => todo.title.includes(action.data)) }
                 }
             default:
                 return state;
@@ -125,18 +131,14 @@ const Todos = () => {
 
     const handleChangeSearch = (event) => {
         let searchBy = event.value;
-        switch (searchBy) {
-            case "completed":
-                dispatch({ type: "SEARCH", search: "completed" })
-                setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
-                break;
-            case "all":
-                setDisplay(prevDisplay => { return { ...prevDisplay, search: null } })
-                getData();
-                break;
-            default:
-                setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
+        if (searchBy == "completed" || searchBy == "all") {
+            dispatch({ type: "SEARCH", search: searchBy })
+            setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
         }
+        else {
+            setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
+        }
+
     }
 
     const search = (data) => {
@@ -219,39 +221,40 @@ const Todos = () => {
                         <input type="text" placeholder="id" {...register("search")} /><br />
                         <button type="submit">Search</button> </form>}
                     {display.search == "alphabetical" && <input type="text" placeholder="search..." onChange={event =>
-                        search(event.target.value)} />} 
+                        search(event.target.value)} />}
                 </span>
 
                 <span>
                     <button onClick={() => { setDisplay(prevDisplay => { return { ...prevDisplay, add: !prevDisplay.add } }) }}>+</button>
-                    {display.add && 
-                    <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
-                        <textarea type="text" placeholder="title" {...register("title")} /><br />
-                        <button type="submit">Add</button>
-                    </form>}
+                    {display.add &&
+                        <form onSubmit={handleSubmit(data => { addTodo(data["title"]); reset(); })}>
+                            <textarea type="text" placeholder="title" {...register("title")} /><br />
+                            <button type="submit">Add</button>
+                        </form>}
                 </span>
 
             </div>
-
-            {userTodos.map((todo) => {
+            {console.log(userTodos)}
+            {userTodos.todosDisplay.map((todo) => {
                 return <>
-                <div className="tasks" key={todo.id}>
+                    <div className="tasks" key={todo.id}>
 
-                    <span className="idSpan">task Id:{todo.id}</span>
-                    <span>{todo.title}</span>
-                    <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) =>handleCheckBox(event, todo.id)} />
+                        <span className="idSpan">task Id:{todo.id}</span>
+                        <span>{todo.title}</span>
+                        <span className="btnSpan"> <input type="checkbox" checked={todo.completed} onChange={(event) => handleCheckBox(event, todo.id)} />
 
-                        <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
-                        <button className="update" onClick={() => { 
-                            currentUpdatedId == todo.id ? setCurrentUpdatedId(null) : setCurrentUpdatedId(todo.id) }}></button>
-                    </span>
+                            <button className="delete" onClick={() => deleteTodo(todo.id)}></button>
+                            <button className="update" onClick={() => {
+                                currentUpdatedId == todo.id ? setCurrentUpdatedId(null) : setCurrentUpdatedId(todo.id)
+                            }}></button>
+                        </span>
 
-                </div>
-                    {currentUpdatedId == todo.id && 
-                    <form onSubmit={handleSubmit(onSubmitUpdate)}>
-                        <textarea type="text" placeholder="title" {...register(`${todo.id}`)} /><br />
-                        <button type="submit">Update</button>
-                    </form>}
+                    </div>
+                    {currentUpdatedId == todo.id &&
+                        <form onSubmit={handleSubmit(onSubmitUpdate)}>
+                            <textarea type="text" placeholder="title" {...register(`${todo.id}`)} /><br />
+                            <button type="submit">Update</button>
+                        </form>}
                 </>
             })}
         </>

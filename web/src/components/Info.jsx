@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { json, useParams } from "react-router-dom";
 import { memo, useState, useEffect } from "react";
-import { UserContext } from '../App'
+import  {UserContext}  from './UserProvider'
 const Info = () => {
-    const { user, setUser } = useContext(UserContext);
+    const { user, setCurrentUser } = useContext(UserContext);
     useEffect(
         () => {
             if (user == null) {
@@ -12,9 +12,9 @@ const Info = () => {
             fetch(`http://localhost:3000/users/${user.id}`)
                 .then(response => response.json())
                 .then(data => {
-                    setUser(data)
+                    setCurrentUser(data)
                 })
-            return () => setUser(JSON.parse(localStorage.getItem("currentUser")))
+            return () => setCurrentUser(JSON.parse(localStorage.getItem("currentUser")))
         }, [])
 
         

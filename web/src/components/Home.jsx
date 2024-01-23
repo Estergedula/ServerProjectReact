@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import './Home.css'
-import { UserContext } from '../App'
+import  {UserContext}  from './UserProvider'
 
 const Home = () => {
     const navigate = useNavigate()
-    const { user, setUser } = useContext(UserContext);
+    const { user, setCurrentUser } = useContext(UserContext);
     const navigates = ["info", "todos", "posts", "albums", "Logout"]
     useEffect(() => {
         if (user == null) {
@@ -23,7 +23,7 @@ const Home = () => {
     }
     const Logout = () => {
         localStorage.clear();
-        setUser(null)
+        setCurrentUser(null)
         navigate('/login')
     }
     return (

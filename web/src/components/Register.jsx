@@ -1,13 +1,13 @@
 import React, { useRef ,useContext ,useState, useEffect} from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import{UserContext} from '../App'
+import  {UserContext}  from './UserProvider'
 
 
 const Register = () => {
 
   const [isExsist, setIsExist] = useState(true);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setCurrentUser } = useContext(UserContext);
   const nextUserId = useRef(0)
 
   const navigate = useNavigate();
@@ -102,12 +102,12 @@ const Register = () => {
             lng: moreDetails.lng
           }
         },
-        "phone": moreDetails.phone,
-        "website": moreDetails.website,
-        "company": {
-          "name": moreDetails.name,
-          "catchPhrase": moreDetails.catchPhrase,
-          "bs": moreDetails.bs
+        phone: moreDetails.phone,
+        website: moreDetails.website,
+        company: {
+          name: moreDetails.companyName,
+          catchPhrase: moreDetails.catchPhrase,
+          bs: moreDetails.bs
         }
       }),
       headers: {
@@ -117,7 +117,7 @@ const Register = () => {
       .then((response) => response.json())
       .then(data => {
         const currentUser = { username: data.username,  name: data.name,id: data.id };
-        setUser(currentUser)
+        setCurrentUser(currentUser)
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       });
     updateId();

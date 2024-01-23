@@ -11,15 +11,10 @@ import Todos from './components/Todos'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Comments from './components/Comments'
 
-export const UserContext = createContext()
-export const postContext = createContext()
 function App() {
-
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("currentUser")))
   return (
     <>
       <Router>
-        <UserContext.Provider value={{ user, setUser }}>
           <Routes>
             <Route path="/" element={<Start />} />
             <Route path="/login" element={<Login />} />
@@ -27,13 +22,11 @@ function App() {
               <Route path="info" element={<Info />} />
               <Route path="todos" element={<Todos />} />
               <Route path="albums" element={<Albums />} />
-              <Route path="posts" element={<Posts />} >
-                  <Route path=":id/comments" element={<Comments />} />
+              <Route path="posts" element={<Posts />} />
+                  <Route path="posts/:id/comments" element={<Comments />} />
               </Route>
-            </Route>
             <Route path="/register" element={<Register />} />
           </Routes>
-        </UserContext.Provider>
       </Router>
     </>
   )
