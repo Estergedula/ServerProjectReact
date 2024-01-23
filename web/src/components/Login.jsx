@@ -37,7 +37,7 @@ const Login = () => {
                     return;
                 }
                 reset();
-                const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id };
+                const currentUser = { username: data[0].username, name: data[0].name, id: data[0].id,email:data[0].email };
                 setCurrentUser(currentUser);
                 localStorage.setItem("currentUser", JSON.stringify(currentUser));
                 navigate(`/home/users/${data[0].id}`)

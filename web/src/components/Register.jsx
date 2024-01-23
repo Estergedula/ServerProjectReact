@@ -116,7 +116,7 @@ const Register = () => {
     })
       .then((response) => response.json())
       .then(data => {
-        const currentUser = { username: data.username,  name: data.name,id: data.id };
+        const currentUser = { username: data.username,  name: data.name,id: data.id,email:data.email };
         setCurrentUser(currentUser)
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
       });

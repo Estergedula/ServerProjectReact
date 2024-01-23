@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef, useReducer } from "react";
-import  {UserContext}  from './UserProvider'
+import { UserContext } from './UserProvider'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
 import { useNavigate, Outlet, useInRouterContext } from "react-router-dom";
@@ -19,6 +19,7 @@ const Posts = () => {
         handleSubmit,
         reset,
     } = useForm();
+    
     let initialPosts = {
         posts: [],
         postsDisplay: []
@@ -80,7 +81,7 @@ const Posts = () => {
             })
 
     }
-   
+
 
     const getNextId = () => {
         fetch(`http://localhost:3000/ContinuousNumber/postsId`)
@@ -205,7 +206,9 @@ const Posts = () => {
                 return <>
                     <div className="postsContainer"><div className="posts" key={post.id}>
 
-                        <span><button className="showPost" onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button><span>Post {post.id}</span></span>
+                        <span>
+                            <button className="showPost" onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button>
+                            <span>Post {post.id}</span></span>
                         <span className="postTitle" style={selectedPostId == post.id ? { fontWeight: "600", color: "rgb(140, 177, 248)" } : null}>{post.title}</span>
                         <span className="btnSpan">
                             <button className="delete" onClick={() => deletePost(post.id)}></button>
@@ -214,7 +217,7 @@ const Posts = () => {
                             }}></button>
                         </span>
 
-                    </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`posts/${post.id}/comments`)}>Comments</button></>}</div>
+                    </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}</div>
 
 
                     {selectedUpdateId == post.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>

@@ -15,18 +15,18 @@ function App() {
   return (
     <>
       <Router>
-          <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/home/users/:id" element={<Home />} >
-              <Route path="info" element={<Info />} />
-              <Route path="todos" element={<Todos />} />
-              <Route path="albums" element={<Albums />} />
-              <Route path="posts" element={<Posts />} />
-                  <Route path="posts/:id/comments" element={<Comments />} />
-              </Route>
-            <Route path="/register" element={<Register />} />
-          </Routes>
+        <Routes>
+          <Route path="/" element={<Start />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home/users/:id" element={<Home />} >
+            <Route path="info" element={<Info />} />
+            <Route path="todos" element={<Todos />} />
+            <Route path="albums" element={<Albums />} />
+            <Route path="posts" element={<Posts />} />
+            <Route path="posts/:id/comments" element={<Comments />} />
+          </Route>
+          <Route path="/register" element={<Register />} />
+        </Routes>
       </Router>
     </>
   )
