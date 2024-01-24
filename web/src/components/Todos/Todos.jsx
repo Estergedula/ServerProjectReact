@@ -198,6 +198,7 @@ const Todos = () => {
         }).then(response => response.json())
             .then(data => {
                 dispatch({ type: "CHANGE", data: data })
+                reset()
             })
     }
 
@@ -244,7 +245,7 @@ const Todos = () => {
                     </div>
                     {currentUpdatedId == todo.id &&
                         <form onSubmit={handleSubmit(onSubmitUpdate)}>
-                            <textarea type="text" defaultValue={todo.title} placeholder="title" {...register(`${todo.id}`, { required: true })} /><br />
+                            <textarea type="text" placeholder="title" {...register(`${todo.id}`, { required: true })} /><br />
                             <button type="submit">Update</button>
                         </form>}
                 </div>
