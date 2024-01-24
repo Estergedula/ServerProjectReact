@@ -1,0 +1,28 @@
+.forms{
+    margin-top: 50px;
+}
+.forms input {
+    width: 200px;
+    height: 30px;
+    background-color:rgb(140, 177, 248) ;
+    border-radius: 3px;
+    padding: 0px 3%;
+    margin-bottom: 14px;
+    font-size: 16px;
+    margin-right: 5px;
+  }
+  
+  .forms * {
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+    outline-color: rgb(95, 146, 239);
+    border: none;
+  }
+  .BTNforns{
+    border: 1px solid black;
+   margin: 15px 0px 15px 0px;
+  }
+  h3{
+    font-size: x-large;
+    margin-top: 150px;
+  }

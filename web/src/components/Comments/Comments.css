@@ -1,0 +1,19 @@
+.comment{
+width: 500px;
+text-align: left;
+margin-top: 30px;
+border: 2px solid rgb(140, 177, 248);
+padding: 15px;
+border-radius: 5px;
+}
+.commentName{
+    font-weight: 600;
+}
+.commentBtns {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .updateForm{
+    margin:30px 0px 0px 170px;
+  }

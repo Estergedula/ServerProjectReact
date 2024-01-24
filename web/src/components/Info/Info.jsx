@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import {  useEffect } from "react";
-import  {UserContext}  from './UserProvider'
+import  {UserContext}  from '../UserProvider'
 const Info = () => {
     const { user, setCurrentUser } = useContext(UserContext);
     useEffect(

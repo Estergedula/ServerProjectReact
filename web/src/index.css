@@ -10,7 +10,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
+button {
+  background-color: rgba(255, 255, 255, 0.87);
+  border-radius: 8px;
+  border: 1px solid black;
+  padding: 0.3em 1em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
 
 body {
   margin-top: 70px;
@@ -25,17 +35,8 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  background-color: rgba(255, 255, 255, 0.87);
-  border-radius: 8px;
-  border: 1px solid black;
-  padding: 0.3em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
+
+
 
 
 

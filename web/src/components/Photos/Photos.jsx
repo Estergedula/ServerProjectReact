@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState, useRef, useReducer } from "react";
-import { UserContext } from './UserProvider'
+import { UserContext } from '../UserProvider'
 import { useForm } from "react-hook-form";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
+import './Photos.css'
 
 const Photos = () => {
     const { id } = useParams()
@@ -98,8 +99,8 @@ const Photos = () => {
         })
             .then((response) => response.json())
             .then(data => {
-                dispatch({ type: "ADD", data: data });
                 reset()
+                dispatch({ type: "ADD", data: data });
             });
         updateId();
     }
@@ -126,7 +127,6 @@ const Photos = () => {
             .then(data => {
                 dispatch({ type: "UPDATE", data: data })
             })
-        reset();
     }
 
     return (

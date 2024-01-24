@@ -1,0 +1,18 @@
+.tasks {
+    margin-top: 20px;
+    font-size: 17px;
+    display: flex;
+    justify-content: space-between;
+    width: 780px;
+    height: 60px;
+    align-items: center;
+    background-color: rgb(140, 177, 248);
+    border-radius: 10px;
+}
+.btnSpan {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    align-items: center;
+    width: 120px;
+  }

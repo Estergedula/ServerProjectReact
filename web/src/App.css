@@ -13,44 +13,8 @@ a {
   color: black;
 }
 
-a:hover{
- font-size: larger;
-}
-
-
-.tasks,
-.albums {
-  margin-top: 20px;
-  font-size: 17px;
-  display: flex;
-
-  justify-content: space-between;
-  width: 780px;
-  height: 60px;
-  align-items: center;
-  background-color: rgb(140, 177, 248);
-  border-radius: 10px;
-}
-
-.btnSpan {
-  display: flex;
-  justify-content: space-between;
-  margin-right: 10px;
-  align-items: center;
-  width: 120px;
-}
-
-.postBody {
-  width: 500px;
-  border-width: 5px;
-}
-
-.posts {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  width: 780px;
-  height: 60px;
+a:hover {
+  font-size: large;
 }
 
 .delete {
@@ -59,16 +23,6 @@ a:hover{
 
 .update {
   background-image: url(./imgs/updatepng.png);
-}
-
-.showPost {
-  padding: 0%;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  width: 13px;
-  height: 15px;
-  margin-right: 10px;
-  background-image: url(./imgs/showPost1.png);
 }
 
 .delete,
@@ -81,24 +35,14 @@ a:hover{
 
 }
 
-.postTitle {
-  margin-left: 20px;
-}
-
 .operations {
-  margin-top: 20px;
   display: flex;
-  justify-content: space-around
+  align-items: center;
 }
 
 .select {
   width: 300px;
-}
-
-nav {
-  display: flex;
-  justify-content: space-around;
-  width: 500px;
+  margin-right: 30px;
 }
 
 .idSpan {
@@ -107,39 +51,4 @@ nav {
 
 .label {
   font-weight: 700;
-}
-
-.postsContainer {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  text-align: left;
-}
-
-img {
-  width: 250px;
-  height: 250px;
-}
-
-.imgs {
-  display: grid;
-  grid-template-columns: auto auto auto auto auto;
-  column-gap: 60px;
-  row-gap: 45px;
-  margin-bottom: 40px;
-}
-
-.photoTitle {
-  height: 75px;
-  display: flex;
-  align-items: baseline;
-}
-
-.photoBtns {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-b{
-  text-align: center;
 }

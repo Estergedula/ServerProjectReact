@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-import  {UserContext}  from './UserProvider'
+import  {UserContext}  from '../UserProvider'
 import './Home.css'
 
 const Home = () => {

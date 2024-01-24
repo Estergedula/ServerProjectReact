@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState, useRef, useReducer } from "react";
-import { UserContext } from './UserProvider'
+import { UserContext } from '../UserProvider'
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-
+import './Comments.css'
 
 const Comments = () => {
     const { id } = useParams()
@@ -101,8 +101,8 @@ const Comments = () => {
         })
             .then((response) => response.json())
             .then(data => {
-                dispatch({ type: "ADD", data: data });
                 reset()
+                dispatch({ type: "ADD", data: data });
             });
         updateId();
     }
@@ -121,7 +121,6 @@ const Comments = () => {
             .then(data => {
                 dispatch({ type: "UPDATE", data: data })
             })
-        reset();
     }
 
     return (
@@ -136,20 +135,20 @@ const Comments = () => {
             }
             {currentComments.map((comment) => {
                 return (
-                    <div key={comment.id}>
+                    <div key={comment.id} className="comment">
                         <div>
-                            <span>{comment.id} {comment.name}</span>
-                            <span>{comment.body}</span>
+                            <span>comment Id:{comment.id} <span className="commentName">{comment.name}</span></span>
+                            <div>{comment.body}</div>
                         </div>
-                        {comment.email === user.email && <span className="photoBtns">
+                        {comment.email === user.email && <span className="commentBtns">
                             <button className="delete" onClick={() => deleteComment(comment.id)}></button>
                             <button className="update" onClick={() => {
                                 selectedUpdateId == comment.id ? setSelectedUpdateId(null) : setSelectedUpdateId(comment.id)
                             }}></button>
                         </span>}
-                        {selectedUpdateId == comment.id && <form onSubmit={handleSubmit(data => onSubmitUpdate(comment.id, data))}>
-                            <textarea type="text" defaultValue={photo.name} placeholder="name" {...register("name", { required: true })} /><br />
-                            <textarea type="text" defaultValue={photo.body} placeholder="body" {...register("body", { required: true })} /><br />
+                        {selectedUpdateId == comment.id && <form className="updateForm" onSubmit={handleSubmit(data => onSubmitUpdate(comment.id, data))}>
+                            <textarea type="text" defaultValue={comment.name} placeholder="name" {...register("name", { required: true })} /><br />
+                            <textarea type="text" defaultValue={comment.body} placeholder="body" {...register("body", { required: true })} /><br />
                             <button type="submit">Update</button>
                         </form>}
                     </div>)

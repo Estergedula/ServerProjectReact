@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useReducer, useState } from "react";
-import { UserContext } from './UserProvider'
+import { UserContext } from '../UserProvider'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom'
-
+import './Albums.css'
 
 const Albums = () => {
     const { user } = useContext(UserContext);
@@ -12,6 +12,10 @@ const Albums = () => {
     const searchOptions = [{ value: "id", label: "id" },
     { value: "alphabetical", label: "alphabetical" },
     { value: "all", label: "all" }]
+    let initialAlbums = {
+        albums: [],
+        albumsDisplay: []
+    }
     const {
         register,
         handleSubmit,
@@ -29,22 +33,30 @@ const Albums = () => {
     const reducer = (state, action) => {
         switch (action.type) {
             case "START":
-                return action.data;
+                return { albums: action.data, albumsDisplay: action.data }
             case "DELETE":
-                return state.filter(album => album.id != action.id)
-            case "ADD":
-                return [...state, action.data]
-            case "SEARCH":
-                if (action.search === "id") {
-                    return state.filter(album => album.id == action.data)
+                return {
+                    albums: state.albums.filter(album => album.id != action.id),
+                    albumsDisplay: state.albumsDisplay.filter(album => album.id != action.id)
                 }
-                return state.filter(album => album.title.includes(action.data));
-
+            case "ADD":
+                return { albums: [...state.albums, action.data], albumsDisplay: [...state.albumsDisplay, action.data] }
+            case "SEARCH":
+                switch (action.search) {
+                    case "id":
+                        return { ...state, albumsDisplay: state.albums.filter(album => album.id == action.data) }
+                    case "all":
+                        return { ...state, albumsDisplay: state.albums }
+                    default:
+                        return { ...state, albumsDisplay: state.albums.filter(album => album.title.includes(action.data)) }
+                }
             default:
                 return state;
         }
     }
-    const [userAlbums, dispatch] = useReducer(reducer, []);
+
+
+    const [userAlbums, dispatch] = useReducer(reducer, initialAlbums);
 
     const getData = () => {
         fetch(`http://localhost:3000/albums/?userId=${user.id}`)
@@ -80,7 +92,7 @@ const Albums = () => {
     const handleChangeSearch = (event) => {
         let searchBy = event.value;
         if (searchBy === "all") {
-            getData();
+           dispatch({ type: "SEARCH", search: "all" });
         }
         else {
             setDisplay(prevDisplay => { return { ...prevDisplay, search: searchBy } })
@@ -96,7 +108,7 @@ const Albums = () => {
     }
 
     const addAlbum = (albumData) => {
-        fetch(`http://localhost:3000/albums`, {
+        fetch("http://localhost:3000/albums", {
             method: 'POST',
             body: JSON.stringify({
                 userId: user.id,
@@ -109,8 +121,8 @@ const Albums = () => {
         })
             .then((response) => response.json())
             .then(data => {
-                dispatch({ type: "ADD", data: data });
                 reset()
+                dispatch({ type: "ADD", data: data });
             });
         updateId();
     }
@@ -132,10 +144,10 @@ const Albums = () => {
                     </form>}</span>
 
             </div>
-            {userAlbums.map((album, index) => {
+            {userAlbums.albumsDisplay.map((album, index) => {
                 return <Link to={`${album.id}/photos`} state={album.title} key={index}><div className="albums" key={album.id}>
-                    <span className="idSpan">album Id:{album.id}</span>
-                    <span>{album.title}</span>
+                    <span className="idSpan">album Id: {album.id}</span>
+                    <span className="albumTitle">{album.title}</span>
                 </div>
                 </Link>
             })}

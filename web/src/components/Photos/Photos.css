@@ -1,0 +1,23 @@
+img {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .imgs {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    column-gap: 60px;
+    row-gap: 45px;
+    margin-bottom: 40px;
+  }
+  
+  .photoTitle {
+    height: 75px;
+    margin-bottom: 0%;
+  }
+  
+  .photoBtns {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  

@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useRef, useReducer } from "react";
-import { UserContext } from './UserProvider'
+import { UserContext } from '../UserProvider'
 import Select from 'react-select'
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import './Posts.css'
 const Posts = () => {
     const { user } = useContext(UserContext);
     const nextPostId = useRef(0)
@@ -141,6 +141,7 @@ const Posts = () => {
         })
             .then((response) => response.json())
             .then(data => {
+                reset();
                 dispatch({ type: "ADD", data: data });
             });
         updateId();
@@ -168,7 +169,6 @@ const Posts = () => {
             .then(data => {
                 dispatch({ type: "CHANGE", data: data })
             })
-        reset();
     }
 
     return (
@@ -191,40 +191,38 @@ const Posts = () => {
                         </form>}
                 </span>
             </div>
-            <div >
-                {userPosts.postsDisplay.map((post, index) => {
-                    return (
-                        <div className="postsContainer" key={index}>
+            {userPosts.postsDisplay.map((post, index) => {
+                return (
+                    <div key={index}>
 
-                            <div className="posts">
+                        <div className="posts">
 
-                                <span>
-                                    <button className="showPost" onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button>
-                                    <span>Post {post.id}</span>
-                                </span>
-                                <span className="postTitle" style={selectedPostId == post.id ? { fontWeight: "600", color: "rgb(140, 177, 248)" } : null}>{post.title}</span>
-                                <span className="btnSpan">
-                                    <button className="delete" onClick={() => deletePost(post.id)}></button>
-                                    <button className="update" onClick={() => {
-                                        selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
-                                    }}>
-                                    </button>
-                                </span>
+                            <span>
+                                <button className="showPost" style={selectedPostId == post.id?{backgroundImage:`url("/src/imgs/showPost.png")`}:{backgroundImage:`url(" /src/imgs/showPost1.png")`}}
+                                 onClick={() => { selectedPostId === post.id ? setSelectedPostId(null) : setSelectedPostId(post.id) }}></button>
+                                <span className="idSpan">Post {post.id}</span>
+                            </span>
+                            <span className="postTitle" style={selectedPostId == post.id ? { fontWeight: "600", color: "rgb(140, 177, 248)" } : null}>{post.title}</span>
+                            <span className="btnSpan">
+                                <button className="delete" onClick={() => deletePost(post.id)}></button>
+                                <button className="update" onClick={() => {
+                                    selectedUpdateId == post.id ? setSelectedUpdateId(null) : setSelectedUpdateId(post.id)
+                                }}>
+                                </button>
+                            </span>
+                           
+                        </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}
 
-                            </div>{selectedPostId === post.id && <><div className="postBody">{post.body}</div> <button onClick={() => navigate(`${post.id}/comments`)}>Comments</button></>}
-
-                            {selectedUpdateId == post.id &&
-                                <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
-                                    <textarea type="text" defaultValue={post.title} placeholder="title" {...register("title", { required: true })} /><br />
-                                    <textarea type="text" defaultValue={post.title} placeholder="body" {...register("body", { required: true })} /><br />
-                                    <button type="submit">Update</button>
-                                </form>
-                            }
-                        </div>
-                    )
-                })}
-            </div>
-
+                        {selectedUpdateId == post.id &&
+                            <form onSubmit={handleSubmit(data => onSubmitUpdate(post.id, data))}>
+                                <textarea type="text" defaultValue={post.title} placeholder="title" {...register("title", { required: true })} /><br />
+                                <textarea type="text" defaultValue={post.title} placeholder="body" {...register("body", { required: true })} /><br />
+                                <button type="submit">Update</button>
+                            </form>
+                        }
+                    </div>
+                )
+            })}
         </>
     )
 }

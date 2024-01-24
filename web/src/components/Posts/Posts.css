@@ -1,0 +1,36 @@
+.postBody {
+    width: 500px;
+    border-width: 5px;
+    margin: 0px 0px 30px 120px;
+    text-align: left;
+}
+
+.posts {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    width: 780px;
+    height: 60px;
+}
+
+.postTitle {
+    margin-left: 20px;
+}
+
+.showPost {
+    border: none;
+    padding: 0%;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+}
+
+.btnSpan {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+    align-items: center;
+    width: 120px;
+}

@@ -1,8 +1,8 @@
 import React, { useRef, useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import { UserContext } from './UserProvider'
-
+import { UserContext } from '../UserProvider'
+import './Forms.css'
 
 const Register = () => {
 
@@ -12,13 +12,63 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  const mas = {
+  const IntegrityChecks = {
+    userName: {
+      required: " user name is required.",
+      pattern: {
+        value: /^[a-zA-Z]*$/,
+        message: "User name cannot contain a white space"
+      },
+      minLength: {
+        value: 2,
+        message: "user name should be at-least 2 characters."
+      }
+    },
     Password: {
       required: "Password is required.",
       minLength: {
         value: 6,
         message: "Password should be at-least 6 characters."
       }
+    },
+    verifyPassword: {
+      required: "verify-password is required.",
+      minLength: {
+        value: 6,
+        message: "verify-password should be at-least 6 characters."
+      }
+    },
+    name: {
+      required: "name is required.",
+      pattern: {
+        value: /^[a-zA-Z/s]*$/,
+        message: "name cannot contain numbers"
+      },
+      minLength: {
+        value: 2,
+        message: "user name should be at-least 2 characters."
+      }
+    },
+    email: {
+      required: "Email is required"
+    },
+    city: {
+      required: "City is required"
+    },
+    phoneNumber: {
+      required: "Phone number is required.",
+      pattern: {
+        value: /^[0-9-]+$/,
+        message: 'Please enter only digits',
+      }
+      , minLength: {
+        value: 9,
+        message: 'phone number should be at-least 9 digits.'
+      }
+    }
+    ,
+    companyName: {
+      required: "Name of company is required."
     }
   }
 
@@ -63,7 +113,7 @@ const Register = () => {
 
   const signUp = (userDetails) => {
     if (userDetails.password !== userDetails.verifyPassword) {
-      alert('error. password is not defined')
+      alert('error! password is not defined')
       reset();
       return;
     }
@@ -79,7 +129,7 @@ const Register = () => {
         }
         reset();
         setIsExist(false);
-        setUser(userDetails);
+        setCurrentUser(userDetails);
       })
   }
 
@@ -127,120 +177,49 @@ const Register = () => {
 
   return (
     <>
-      {isExsist ? <form onSubmit={handleSubmit(signUp)}>
-        <input type="text" placeholder="user name"{...register("userName", {
-          required: " user name is required.",
-          pattern: {
-            value: /^[a-zA-Z]*$/,
-            message: "User name cannot contain a white space"
-          },
-          minLength: {
-            value: 2,
-            message: "user name should be at-least 2 characters."
-          }
-        })} /><br />
+      <h3>REGISTER</h3>
+      {isExsist ? <form onSubmit={handleSubmit(signUp)} className="forms">
+        <input type="text" placeholder="user name"{...register("userName", IntegrityChecks.userName)} /><br />
         {errors.userName && (
           <p className="errorMsg">{errors.userName.message}</p>)}
-        <input type="password" placeholder="password" {...register("password", {
-          required: "Password is required.",
-          minLength: {
-            value: 6,
-            message: "Password should be at-least 6 characters."
-          }
-        })} /><br />
+        <input type="password" placeholder="password" {...register("password", IntegrityChecks.Password)} /><br />
         {errors.password && (
           <p className="errorMsg">{errors.password.message}</p>)}
-        <input type="password" placeholder="verify-password" {...register("verifyPassword", {
-          required: "verify-password is required.",
-          minLength: {
-            value: 6,
-            message: "verify-password should be at-least 6 characters."
-          }
-        })} />
+        <input type="password" placeholder="verify-password" {...register("verifyPassword", IntegrityChecks.verifyPassword)} />
         {errors.verifyPassword && (
           <p className="errorMsg">{errors.verifyPassword.message}</p>)}<br />
-        <button type="submit">Register</button><br />
+        <button type="submit" className="BTNforns">Submit</button><br />
         <Link to="/login">already registered?</Link>
-      </form> :
-        <form onSubmit={handleSubmit(userData)}>
-          <input type="text" placeholder="Name" {...register("name", {
-            required: "name is required.",
-            pattern: {
-              value: /^[a-zA-Z/s]*$/,
-              message: "name cannot contain numbers"
-            },
-            minLength: {
-              value: 2,
-              message: "user name should be at-least 2 characters."
-            }
-          })} /><br />
+      </form>
+        :
+        <form onSubmit={handleSubmit(userData)} className="forms">
+          <input type="text" placeholder="Name" {...register("name", IntegrityChecks.name)} /><br />
           {errors.name && (
             <p className="errorMsg">{errors.name.message}</p>)}
-          <input type="email" placeholder="Email" {...register("email", {
-            required: "Email is required",
-          })} /><br />
+          <input type="email" placeholder="Email" {...register("email", IntegrityChecks.email)} /><br />
           {errors.email && (
             <p className="errorMsg">{errors.email.message}</p>)}
           <label >address:</label><br />
           <input type="text" placeholder="street" {...register("street")} />
           <input type="text" placeholder="suite"  {...register("suite")} />
-          <input type="text" placeholder="city" {...register("city", {
-            required: "City is required",
-          })} />
+          <input type="text" placeholder="city" {...register("city", IntegrityChecks.city)} />
           {errors.city && (
             <p className="errorMsg">{errors.city.message}</p>)}
-          <input type="text" placeholder="zipcode"  {...register("zipcode", {
-            pattern: {
-              value: /^[0-9-]+$/,
-              message: 'Please enter only digits',
-            }
-          })
-          } />
-          {errors.zipcode && (
-            <p className="errorMsg">{errors.zipcode.message}</p>)}<br />
+          <input type="text" placeholder="zipcode"  {...register("zipcode")} /><br />
           <label >geo:</label><br />
-          <input type="text" placeholder="lat" {...register("lat", {
-            pattern: {
-              value: /^[0-9-]+$/,
-              message: 'Please enter only digits',
-            }
-          })
-          } />
-          {errors.lat && (
-            <p className="errorMsg">{errors.lat.message}</p>)}
-          <input type="text" placeholder="lng" {...register("lng", {
-            pattern: {
-              value: /^[0-9-]+$/,
-              message: 'Please enter only digits',
-            }
-          })
-          } />
-          {errors.lng && (
-            <p className="errorMsg">{errors.lng.message}</p>)}<br />
-          <input type="text" placeholder="phone number" {...register("phoneNumber", {
-            required: "Phone number is required.",
-            pattern: {
-              value: /^[0-9-]+$/,
-              message: 'Please enter only digits',
-            }
-            , minLength: {
-              value: 9,
-              message: 'phone number should be at-least 9 digits.'
-            }
-          })
-          } />
+          <input type="text" placeholder="lat" {...register("lat")} />
+          <input type="text" placeholder="lng" {...register("lng")} /><br />
+          <input type="text" placeholder="phone number" {...register("phoneNumber", IntegrityChecks.phoneNumber)} />
           {errors.phoneNumber && (
             <p className="errorMsg">{errors.phoneNumber.message}</p>)}<br />
           <label htmlFor="company">company</label><br />
-          <input type="text" name="company" placeholder="name of company" {...register("companyName", {
-            required: "Name of company is required."
-          })} />
+          <input type="text" name="company" placeholder="name of company" {...register("companyName", IntegrityChecks.companyName)} />
           {errors.companyName && (
             <p className="errorMsg">{errors.companyName.message}</p>)}
           <input type="text" placeholder="catchPhrase"  {...register("catchPhrase")} />
           <input type="text" placeholder="bs"  {...register("bs")} />
           <br />
-          <button type="submit">click me!</button>
+          <button type="submit" className="BTNforns">Register</button>
         </form>}
     </>
   )

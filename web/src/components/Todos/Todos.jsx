@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState, useContext, useReducer } from "react";
-import { UserContext } from './UserProvider'
+import { UserContext } from '../UserProvider'
 import { useForm } from "react-hook-form";
 import Select from 'react-select'
-
+import './Todos.css'
 
 const Todos = () => {
     const { user } = useContext(UserContext);
@@ -179,6 +179,7 @@ const Todos = () => {
         })
             .then((response) => response.json())
             .then(data => {
+                reset();
                 dispatch({ type: "ADD", data: data });
             });
         updateId();
@@ -197,7 +198,6 @@ const Todos = () => {
         }).then(response => response.json())
             .then(data => {
                 dispatch({ type: "CHANGE", data: data })
-                reset();
             })
     }
 
